@@ -1,0 +1,17 @@
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+log.txt
+*.exe
+*.cbp
+*.a
+cmake-build-release-testapp
+cmake-build-*
+!cmake-build-debug/data
+.idea

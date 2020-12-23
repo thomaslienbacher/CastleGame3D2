@@ -4,6 +4,7 @@
 
 #include "master.hpp"
 #include "window.hpp"
+#include <cstdio>
 
 namespace window {
     GLFWwindow *glfw_window = nullptr;
@@ -51,6 +52,16 @@ namespace window {
         glDebugMessageCallback((GLDEBUGPROC) debug_msg_callback, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 #endif
+
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glPointSize(2);
+        glLineWidth(2);
     }
 
     void close() {
@@ -65,5 +76,9 @@ namespace window {
 
     void add_on_resize(const std::function<void(int, int)>& func) {
         on_resizes.emplace_back(func);
+    }
+
+    bool is_key_pressed(int key) {
+        return glfwGetKey(glfw_window, key) & GLFW_PRESS;
     }
 }

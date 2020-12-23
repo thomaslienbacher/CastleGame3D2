@@ -8,6 +8,7 @@
 #include "master.hpp"
 #include <unordered_map>
 #include <glm/glm.hpp>
+#include <string>
 
 class Shader {
     GLuint program;

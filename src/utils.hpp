@@ -7,6 +7,7 @@
 
 #include "master.hpp"
 #include <filesystem>
+#include <iostream>
 
 namespace utils {
     std::string file_to_string(std::filesystem::path &&path);

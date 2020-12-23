@@ -2,8 +2,13 @@
 // Created by Thomas Lienbacher on 10.12.2020.
 //
 
+#ifndef CASTLEGAME3D2_GEOMETRY_HPP
+#define CASTLEGAME3D2_GEOMETRY_HPP
+
 #include <fstream>
 #include <cstdint>
+
+//TODO: add to namespace
 
 const uint32_t MAGIC_NUMBER = 0x30464433;
 const uint32_t VERSION_0 = 0x0;
@@ -39,3 +44,5 @@ public:
 
 };
 
+
+#endif //CASTLEGAME3D2_GEOMETRY_HPP

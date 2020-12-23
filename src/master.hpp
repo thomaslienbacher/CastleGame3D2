@@ -7,6 +7,5 @@
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-#include <iostream>
 
 #endif //CASTLEGAME3D2_MASTER_HPP

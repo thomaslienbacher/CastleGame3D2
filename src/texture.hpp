@@ -12,10 +12,10 @@ class Texture {
     GLuint id;
 
 public:
-    Texture(unsigned int width, unsigned int height, GLint format, void* data);
-    ~Texture();
 
-    static Texture from_file(std::filesystem::path &&path);
+    Texture(std::filesystem::path &&path);
+
+    ~Texture();
 
     void bind();
 

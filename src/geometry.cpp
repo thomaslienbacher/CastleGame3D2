@@ -9,6 +9,7 @@
 #include <sstream>
 #include <cstring>
 #include "geometry.hpp"
+#include "utils.hpp"
 
 GeometryFormat::GeometryFormat(GeometryFormatHeader header) : header(header) {
     allocated = false;
@@ -27,9 +28,18 @@ GeometryFormat GeometryFormat::import_from_file(std::ifstream &file) {
     GeometryFormat g;
     g.allocated = true;
 
-    //TODO: check for MAGIC NUMBER and read errors
+    //TODO: check for and read errors
 
     file.read((char *) &g.header, sizeof(GeometryFormatHeader));
+
+    if (g.header.magic != MAGIC_NUMBER) {
+        std::cerr << "Magic number is incorrect" << panic;
+    }
+
+    if (g.header.version != LATEST_VERSION) {
+        std::cerr << "File is out of date" << panic;
+    }
+
     g.indices = new uint32_t[g.header.num_indices];
     g.vertices = new float[g.header.num_vertices * 3];
     g.texcoords = new float[g.header.num_vertices * 2];
@@ -137,6 +147,9 @@ GeometryFormat GeometryFormat::import_from_obj(std::ifstream &file) {
     }
 
     GeometryFormat g;
+    g.header.magic = MAGIC_NUMBER;
+    g.header.version = LATEST_VERSION;
+    std::strcpy(g.header.identifier, "_obj_imported");
     g.allocated = true;
     g.header.num_vertices = num_vertices;
     g.header.num_indices = num_indices;
@@ -152,4 +165,58 @@ GeometryFormat GeometryFormat::import_from_obj(std::ifstream &file) {
     std::memcpy(g.normals, normals.data(), normals.size() * sizeof(float));
 
     return g;
+}
+
+GeometryFormat::GeometryFormat(std::ifstream &binfile) : allocated(true) {
+    //TODO: check for read errors
+    binfile.read((char *) &this->header, sizeof(GeometryFormatHeader));
+
+    if (this->header.magic != MAGIC_NUMBER) {
+        std::cerr << "Magic number is incorrect" << panic;
+    }
+
+    if (this->header.version != LATEST_VERSION) {
+        std::cerr << "File is out of date" << panic;
+    }
+
+    this->indices = new uint32_t[this->header.num_indices];
+    this->vertices = new float[this->header.num_vertices * 3];
+    this->texcoords = new float[this->header.num_vertices * 2];
+    this->normals = new float[this->header.num_vertices * 3];
+
+    binfile.read((char *) this->indices, sizeof(uint32_t) * this->header.num_indices);
+    binfile.read((char *) this->vertices, sizeof(float) * this->header.num_vertices * 3);
+    binfile.read((char *) this->texcoords, sizeof(float) * this->header.num_vertices * 2);
+    binfile.read((char *) this->normals, sizeof(float) * this->header.num_vertices * 3);
+}
+
+GeometryFormat::GeometryFormat(std::string &binfile) {
+    std::ifstream in;
+    in.open(binfile, std::ifstream::in | std::ifstream::binary);
+
+    if (!in.is_open()) {
+        std::cerr << "Couln't open " << binfile << panic;
+    }
+
+    in.read((char *) &this->header, sizeof(GeometryFormatHeader));
+
+    if (this->header.magic != MAGIC_NUMBER) {
+        std::cerr << "Magic number is incorrect" << panic;
+    }
+
+    if (this->header.version != LATEST_VERSION) {
+        std::cerr << "File is out of date" << panic;
+    }
+
+    this->indices = new uint32_t[this->header.num_indices];
+    this->vertices = new float[this->header.num_vertices * 3];
+    this->texcoords = new float[this->header.num_vertices * 2];
+    this->normals = new float[this->header.num_vertices * 3];
+
+    in.read((char *) this->indices, sizeof(uint32_t) * this->header.num_indices);
+    in.read((char *) this->vertices, sizeof(float) * this->header.num_vertices * 3);
+    in.read((char *) this->texcoords, sizeof(float) * this->header.num_vertices * 2);
+    in.read((char *) this->normals, sizeof(float) * this->header.num_vertices * 3);
+
+    in.close();
 }

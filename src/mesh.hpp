@@ -6,6 +6,7 @@
 #define CASTLEGAME3D2_MESH_HPP
 
 #include "master.hpp"
+#include "geometry.hpp"
 
 class Mesh {
     GLuint vao;
@@ -14,12 +15,20 @@ class Mesh {
 
     unsigned int num_elements;
 
-    const int VBO_VERTICES = 0;
-    const int VBO_TEXCOORDS = 1;
-    const int VBO_NORMALS = 2;
+    static constexpr int VBO_VERTICES = 0;
+    static constexpr int VBO_TEXCOORDS = 1;
+    static constexpr int VBO_NORMALS = 2;
 
 public:
-    Mesh(unsigned int num_indices, unsigned int *indices, unsigned int num_vertices, float* vertices, float* texcoords, float* normals);
+    Mesh() = default;
+
+    Mesh(unsigned int num_indices, unsigned int *indices, unsigned int num_vertices, float *vertices, float *texcoords,
+         float *normals);
+
+    explicit Mesh(GeometryFormat *geometry);
+
+    explicit Mesh(GeometryFormat &geometry);
+
     ~Mesh();
 
     void bind();

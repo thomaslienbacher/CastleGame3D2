@@ -181,27 +181,31 @@ namespace debug {
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(view_matrix);
 
-        glBegin(GL_TRIANGLES);
-        for (auto t : renderer->getTriangles()) {
-            float r = (float) t.color1 / 255.0f;
-            float g = (float) t.color2 / 255.0f;
-            float bc = (float) t.color3 / 255.0f;
-            glColor3f(r, g, bc * 0.5f);
-            glVertex3f(t.point1.x, t.point1.y, t.point1.z);
-            glVertex3f(t.point2.x, t.point2.y, t.point2.z);
-            glVertex3f(t.point3.x, t.point3.y, t.point3.z);
+        if (renderer->getNbTriangles() > 0) {
+            glBegin(GL_TRIANGLES);
+            for (auto t : renderer->getTriangles()) {
+                float r = (float) t.color1 / 255.0f;
+                float g = (float) t.color2 / 255.0f;
+                float bc = (float) t.color3 / 255.0f;
+                glColor3f(r, g, bc * 0.5f);
+                glVertex3f(t.point1.x, t.point1.y, t.point1.z);
+                glVertex3f(t.point2.x, t.point2.y, t.point2.z);
+                glVertex3f(t.point3.x, t.point3.y, t.point3.z);
+            }
+            glEnd();
         }
-        glEnd();
 
-        glBegin(GL_LINES);
-        for (auto t : renderer->getLines()) {
-            float r = (float) t.color1 / 255.0f;
-            float g = (float) t.color2 / 255.0f;
-            glColor3f(r, g, 0.5f);
-            glVertex3f(t.point1.x, t.point1.y, t.point1.z);
-            glVertex3f(t.point2.x, t.point2.y, t.point2.z);
+        if (renderer->getNbLines() > 0) {
+            glBegin(GL_LINES);
+            for (auto t : renderer->getLines()) {
+                float r = (float) t.color1 / 255.0f;
+                float g = (float) t.color2 / 255.0f;
+                glColor3f(r, g, 0.5f);
+                glVertex3f(t.point1.x, t.point1.y, t.point1.z);
+                glVertex3f(t.point2.x, t.point2.y, t.point2.z);
+            }
+            glEnd();
         }
-        glEnd();
 
         restore();
     }

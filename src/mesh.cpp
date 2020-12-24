@@ -38,6 +38,15 @@ Mesh::Mesh(unsigned int num_indices, unsigned int *indices, unsigned int num_ver
     glEnableVertexAttribArray(2);
 }
 
+Mesh::Mesh(GeometryFormat &geometry) :
+        Mesh(geometry.header.num_indices, geometry.indices, geometry.header.num_vertices, geometry.vertices,
+             geometry.texcoords, geometry.normals) {}
+
+Mesh::Mesh(GeometryFormat *geometry) :
+        Mesh(geometry->header.num_indices, geometry->indices,
+             geometry->header.num_vertices, geometry->vertices,
+             geometry->texcoords, geometry->normals) {}
+
 Mesh::~Mesh() {
     glDeleteBuffers(3, this->vbos);
     glDeleteBuffers(1, &this->ebo);

@@ -5,16 +5,15 @@
 #ifndef CASTLEGAME3D2_GEOMETRY_HPP
 #define CASTLEGAME3D2_GEOMETRY_HPP
 
+#include "master.hpp"
 #include <fstream>
 #include <cstdint>
 
-//TODO: add to namespace
-
-const uint32_t MAGIC_NUMBER = 0x30464433;
-const uint32_t VERSION_0 = 0x0;
+const uint32_t MAGIC_NUMBER = 0x4c444f4d;
+const uint32_t LATEST_VERSION = 0x2;
 
 struct GeometryFormatHeader {
-    uint32_t magic = MAGIC_NUMBER;
+    uint32_t magic = 0;
     uint32_t version = 0;
     uint32_t flags = 0;
     char identifier[32] = {0};
@@ -34,6 +33,10 @@ public:
 
     explicit GeometryFormat(GeometryFormatHeader header = {});
 
+    explicit GeometryFormat(std::ifstream &binfile);
+
+    explicit GeometryFormat(std::string &binfile);
+
     ~GeometryFormat();
 
     static GeometryFormat import_from_file(std::ifstream &file);
@@ -41,7 +44,6 @@ public:
     static GeometryFormat import_from_obj(std::ifstream &file);
 
     void export_to_file(std::ofstream &file);
-
 };
 
 

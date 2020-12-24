@@ -12,20 +12,91 @@ namespace window {
 
     static void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
         glViewport(0, 0, width, height);
-        for (const auto& f : on_resizes) {
+        for (const auto &f : on_resizes) {
             f(width, height);
         }
     }
 
     static void debug_msg_callback(GLenum source, GLenum type, GLuint id,
                                    GLenum severity, GLsizei length, const GLchar *message, const void *userParam) {
-        if (type == GL_DEBUG_TYPE_ERROR) {
-            printf("OpenGL Debug: ERROR src 0x%x, type 0x%x, id 0x%x, severity 0x%x, message %s\n", source, type, id,
-                   severity, message);
-        } else {
-            printf("OpenGL Debug: INFO src 0x%x, type 0x%x, id 0x%x, severity 0x%x, message %s\n", source, type, id,
-                   severity, message);
+
+        const char *severity_str = nullptr;
+
+        switch (severity) {
+            case GL_DEBUG_SEVERITY_LOW:
+                severity_str = "LOW";
+                break;
+            case GL_DEBUG_SEVERITY_MEDIUM:
+                severity_str = "MEDIUM";
+                break;
+            case GL_DEBUG_SEVERITY_HIGH:
+                severity_str = "HIGH";
+                break;
+            default:
+            case GL_DEBUG_SEVERITY_NOTIFICATION:
+                severity_str = "NONE";
+                break;
         }
+
+        const char *source_str = nullptr;
+
+        switch (source) {
+            case GL_DEBUG_SOURCE_API:
+                source_str = "API";
+                break;
+            case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+                source_str = "WINDOW_SYSTEM";
+                break;
+            case GL_DEBUG_SOURCE_SHADER_COMPILER:
+                source_str = "SHADER_COMPILER";
+                break;
+            case GL_DEBUG_SOURCE_THIRD_PARTY    :
+                source_str = "THIRD_PARTY";
+                break;
+            case GL_DEBUG_SOURCE_APPLICATION    :
+                source_str = "APPLICATION";
+                break;
+            default:
+            case GL_DEBUG_SOURCE_OTHER    :
+                source_str = "OTHER";
+                break;
+        }
+
+        const char *type_str = nullptr;
+
+        switch (type) {
+            case GL_DEBUG_TYPE_ERROR:
+                type_str = "ERROR";
+                break;
+            case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+                type_str = "DEPRECATED_BEHAVIOR";
+                break;
+            case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+                type_str = "UNDEFINDED_BEHAVIOR";
+                break;
+            case GL_DEBUG_TYPE_PORTABILITY:
+                type_str = "PORTABILITY";
+                break;
+            case GL_DEBUG_TYPE_PERFORMANCE:
+                type_str = "PERFORMANCE";
+                break;
+            case GL_DEBUG_TYPE_MARKER:
+                type_str = "MARKER";
+                break;
+            case GL_DEBUG_TYPE_PUSH_GROUP:
+                type_str = "PUSH_GROUP";
+                break;
+            case GL_DEBUG_TYPE_POP_GROUP:
+                type_str = "POP_GROUP";
+                break;
+            default:
+            case GL_DEBUG_TYPE_OTHER:
+                type_str = "OTHER";
+                break;
+        }
+
+        printf("OpenGL Debug: %s %s, id %x, severity %s, message %s\n", source_str, type_str, id,
+               severity_str, message);
     }
 
     void init() {
@@ -74,7 +145,7 @@ namespace window {
         return (float) width / (float) height;
     }
 
-    void add_on_resize(const std::function<void(int, int)>& func) {
+    void add_on_resize(const std::function<void(int, int)> &func) {
         on_resizes.emplace_back(func);
     }
 

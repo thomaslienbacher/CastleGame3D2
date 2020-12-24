@@ -18,6 +18,8 @@ class Shader {
     std::unordered_map<std::string, GLint> uniform_locations;
 
 public:
+    Shader() = default;
+
     Shader(std::string &src_vertex_shader, std::string &src_fragment_shader);
 
     ~Shader();

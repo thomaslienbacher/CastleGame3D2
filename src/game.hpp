@@ -14,11 +14,12 @@
 #include "mesh.hpp"
 #include "model.hpp"
 #include "level.hpp"
+#include "player.hpp"
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
-    Camera cam;
     Shader *simple_shader;
+    Player *player;
     Level *level;
 
 public:

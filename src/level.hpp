@@ -11,6 +11,7 @@
 #include "texture.hpp"
 #include "mesh.hpp"
 
+//TODO: put constants into namespace or struct
 const uint32_t LEVEL_MAGIC = 0x4c56454c;
 const uint32_t LEVEL_VERSION = 0x1;
 
@@ -64,6 +65,11 @@ class Level {
     Texture *texture;
     std::vector<Mesh *> meshes;
     std::vector<rp3d::RigidBody *> bodies;
+    rp3d::PhysicsCommon *physx;
+    rp3d::PhysicsWorld *world;
+    std::vector<rp3d::TriangleMesh *> tri_meshes;
+    std::vector<rp3d::TriangleVertexArray *> tvas;
+    std::vector<rp3d::ConcaveMeshShape *> shapes;
 
 public:
     explicit Level(std::string levelfile, std::string texture, rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world);
@@ -72,6 +78,7 @@ public:
 
     void draw();
 
+    glm::vec3 get_spawnpoint();
 };
 
 

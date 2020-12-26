@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cstdint>
 
+//TODO: put constants into namespace or struct
 const uint32_t GEOMETRY_MAGIC = 0x4c444f4d;
 const uint32_t GEOMETRY_VERSION = 0x2;
 

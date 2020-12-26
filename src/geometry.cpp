@@ -37,7 +37,7 @@ GeometryFormat GeometryFormat::import_from_file(std::ifstream &file) {
     }
 
     if (g.header.version != GEOMETRY_VERSION) {
-        std::cerr << "File is out of date" << panic;
+        std::cerr << "File version is incorrect" << panic;
     }
 
     g.indices = new uint32_t[g.header.num_indices];
@@ -176,7 +176,7 @@ GeometryFormat::GeometryFormat(std::ifstream &binfile) : allocated(true) {
     }
 
     if (this->header.version != GEOMETRY_VERSION) {
-        std::cerr << "File is out of date" << panic;
+        std::cerr << "File version is incorrect" << panic;
     }
 
     this->indices = new uint32_t[this->header.num_indices];
@@ -205,7 +205,7 @@ GeometryFormat::GeometryFormat(std::string &binfile) {
     }
 
     if (this->header.version != GEOMETRY_VERSION) {
-        std::cerr << "File is out of date" << panic;
+        std::cerr << "File version is incorrect" << panic;
     }
 
     this->indices = new uint32_t[this->header.num_indices];

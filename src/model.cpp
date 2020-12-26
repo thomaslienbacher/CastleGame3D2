@@ -3,6 +3,7 @@
 //
 
 #include "model.hpp"
+#include "debug.hpp"
 
 Model::Model(std::string geometryfile, std::string texturefile) {
     geometry = new GeometryFormat(geometryfile);

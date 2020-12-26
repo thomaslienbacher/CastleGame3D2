@@ -13,12 +13,13 @@
 #include "geometry.hpp"
 #include "mesh.hpp"
 #include "model.hpp"
+#include "level.hpp"
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
     Camera cam;
     Shader *simple_shader;
-    Model *cube_model;
+    Level *level;
 
 public:
     rp3d::PhysicsCommon physx;

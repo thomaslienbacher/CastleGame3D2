@@ -9,8 +9,8 @@
 #include <fstream>
 #include <cstdint>
 
-const uint32_t MAGIC_NUMBER = 0x4c444f4d;
-const uint32_t LATEST_VERSION = 0x2;
+const uint32_t GEOMETRY_MAGIC = 0x4c444f4d;
+const uint32_t GEOMETRY_VERSION = 0x2;
 
 struct GeometryFormatHeader {
     uint32_t magic = 0;

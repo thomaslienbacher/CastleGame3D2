@@ -28,15 +28,15 @@ GeometryFormat GeometryFormat::import_from_file(std::ifstream &file) {
     GeometryFormat g;
     g.allocated = true;
 
-    //TODO: check for and read errors
+    //TODO: check for read errors
 
     file.read((char *) &g.header, sizeof(GeometryFormatHeader));
 
-    if (g.header.magic != MAGIC_NUMBER) {
+    if (g.header.magic != GEOMETRY_MAGIC) {
         std::cerr << "Magic number is incorrect" << panic;
     }
 
-    if (g.header.version != LATEST_VERSION) {
+    if (g.header.version != GEOMETRY_VERSION) {
         std::cerr << "File is out of date" << panic;
     }
 
@@ -147,8 +147,8 @@ GeometryFormat GeometryFormat::import_from_obj(std::ifstream &file) {
     }
 
     GeometryFormat g;
-    g.header.magic = MAGIC_NUMBER;
-    g.header.version = LATEST_VERSION;
+    g.header.magic = GEOMETRY_MAGIC;
+    g.header.version = GEOMETRY_VERSION;
     std::strcpy(g.header.identifier, "_obj_imported");
     g.allocated = true;
     g.header.num_vertices = num_vertices;
@@ -171,11 +171,11 @@ GeometryFormat::GeometryFormat(std::ifstream &binfile) : allocated(true) {
     //TODO: check for read errors
     binfile.read((char *) &this->header, sizeof(GeometryFormatHeader));
 
-    if (this->header.magic != MAGIC_NUMBER) {
+    if (this->header.magic != GEOMETRY_MAGIC) {
         std::cerr << "Magic number is incorrect" << panic;
     }
 
-    if (this->header.version != LATEST_VERSION) {
+    if (this->header.version != GEOMETRY_VERSION) {
         std::cerr << "File is out of date" << panic;
     }
 
@@ -200,11 +200,11 @@ GeometryFormat::GeometryFormat(std::string &binfile) {
 
     in.read((char *) &this->header, sizeof(GeometryFormatHeader));
 
-    if (this->header.magic != MAGIC_NUMBER) {
+    if (this->header.magic != GEOMETRY_MAGIC) {
         std::cerr << "Magic number is incorrect" << panic;
     }
 
-    if (this->header.version != LATEST_VERSION) {
+    if (this->header.version != GEOMETRY_VERSION) {
         std::cerr << "File is out of date" << panic;
     }
 

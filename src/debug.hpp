@@ -32,6 +32,8 @@ namespace debug {
 
     void geometry(GeometryFormat &g);
 
+    void geometry_normals(GeometryFormat &g);
+
     void render_physics(rp3d::DebugRenderer *renderer);
 
     glm::vec3 vec_into(const rp3d::Vector3 &v);

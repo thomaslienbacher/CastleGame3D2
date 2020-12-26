@@ -67,10 +67,10 @@ namespace debug {
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(view_matrix);
 
-        const int PLANES = 16;
+        const int PLANES = 12;
         for (int plane = (-PLANES / 2); plane <= (PLANES / 2); ++plane) {
             glBegin(GL_LINE_LOOP);
-            for (float angle = 0; angle <= glm::two_pi<float>(); angle += glm::two_pi<float>() / 16.0f) {
+            for (float angle = 0; angle <= glm::two_pi<float>(); angle += glm::two_pi<float>() / 12.0f) {
                 float pf = (float) plane / (float) PLANES;
                 float adjusted_r = radius * std::cos(pf * glm::pi<float>());
                 float plane_adjustment = radius * std::sin(pf * glm::pi<float>());
@@ -206,6 +206,27 @@ namespace debug {
             }
             glEnd();
         }
+
+        restore();
+    }
+
+    void geometry_normals(GeometryFormat &g) {
+        prepare();
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadMatrixf(proj_matrix);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadMatrixf(view_matrix);
+
+        glBegin(GL_LINES);
+        for (int i = 0; i < g.header.num_vertices; i++) {
+            auto v = glm::vec3(g.vertices[i * 3], g.vertices[i * 3 + 1], g.vertices[i * 3 + 2]);
+            auto n = glm::vec3(g.normals[i * 3], g.normals[i * 3 + 1], g.normals[i * 3 + 2]);
+            auto v2 = v + (n * 0.2f);
+            glVertex3f(v.x, v.y, v.z);
+            glVertex3f(v2.x, v2.y, v2.z);
+        }
+        glEnd();
 
         restore();
     }

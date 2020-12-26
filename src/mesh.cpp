@@ -17,9 +17,8 @@ Mesh::Mesh(unsigned int num_indices, unsigned int *indices, unsigned int num_ver
 
     glGenBuffers(3, this->vbos);
 
-    //This doesn't make sense but it works ??
-    unsigned int stride = 0;
-    void *offset = 0;
+    const unsigned int stride = 0;
+    const void *offset = nullptr;
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbos[VBO_VERTICES]);
     glBufferData(GL_ARRAY_BUFFER, num_vertices * 3 * sizeof(float), vertices, GL_STATIC_DRAW);

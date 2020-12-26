@@ -7,7 +7,7 @@
 #include "window.hpp"
 
 Camera::Camera() {
-    projection = glm::perspective(glm::radians(75.0f), window::get_aspect_ratio(), 0.1f, 100.f);
+    projection = glm::perspective(glm::radians(75.0f), window::get_aspect_ratio(), 0.1f, 200.f);
     view = glm::mat4(1.0f);
     position = glm::vec3();
     pitch = 0;

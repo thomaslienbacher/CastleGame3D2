@@ -5,9 +5,6 @@
 #include "master.hpp"
 #include "window.hpp"
 #include "game.hpp"
-#include "geometry.hpp"
-#include "utils.hpp"
-#include "debug.hpp"
 
 int main() {
     window::init();

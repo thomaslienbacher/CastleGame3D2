@@ -7,6 +7,8 @@ import struct
 from pathlib import Path
 import math
 import mathutils
+import array
+from pprint import pprint
 
 MAGIC = 0x4c56454c
 VERSION = 1
@@ -133,12 +135,29 @@ def write_level_meshes(file):
     
 """
 struct LevelFormatObject {
+    enum Type : uint32_t {
+        None = 0,
+        Rune = 1
+    };
+
     uint32_t id = 0;
-    uint32_t type = 0;
+    Type type = Type::None;
     char identifier[32] = {0};
     float position[3] = {0.f, 0.f, 0.f};
+
     union {
         char _phantom[24] = {0};
+
+        struct RuneObject {
+            enum Kind : uint32_t {
+                A = 0,
+                B = 1,
+                C = 2,
+            };
+
+            Kind kind;
+            float yrot;
+        } rune;
     } custom_data;
 } __attribute__ ((packed));
 """
@@ -150,7 +169,7 @@ def extract_level_objects():
     
     for o in objects_list:
         new = dict()
-        new["id"] = len(level_objects) | 0xffff0000
+        new["id"] = len(level_objects)
         
         type = o.data.get("type")
         if type == None:
@@ -167,6 +186,18 @@ def extract_level_objects():
                 new["custom_data"][i] = 0x41 + i
                 
             new["custom_data"] = bytes(new["custom_data"])
+        
+        if type == 1:
+            kind = o.data.get("kind")
+            yrot = math.degrees(o.rotation_euler.z)
+            print(yrot)
+            
+            if kind == None:
+                raise Exception("incomplete definition " + o.name)
+            
+            buffer = array.array('B', [0 for i in range(24)])
+            struct.pack_into("<If", buffer, 0, kind, yrot)
+            new["custom_data"] = bytes(buffer)
             
         if new.get("custom_data") == None:
             raise Exception("no custom data defined for type " + str(type) + " (obj: " + o.name + ")")
@@ -185,7 +216,7 @@ def write_level_object(file, level_object):
         raise Exception("custom data has to have length 24 (type: " + str(level_object["type"]) + ")")
     file.write(level_object["custom_data"])
     
-    
+
 basedir = os.path.dirname(bpy.data.filepath)
 if not basedir:
     raise Exception("Blend file is not saved")
@@ -194,11 +225,11 @@ level_name = Path(bpy.data.filepath).stem
 level_file_path = os.path.join(basedir, level_name + ".level")
 identifier = level_name + "@bl@lv"
 
-spawnpoint = (0, 2, 0) # in opengl coords
+spawnpoint = (0, 0, 0) # in opengl coords
 
 level_objects = extract_level_objects()
 
-print(level_objects)
+pprint(level_objects)
 
 with open(level_file_path, 'wb') as file:
     write_header(file, identifier, spawnpoint, get_num_meshes(), len(level_objects))

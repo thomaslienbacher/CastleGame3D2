@@ -10,6 +10,7 @@
 namespace debug {
     static float color[3] = {1.0, 1.0, 1.0};
     static GLint current_program = 0;
+    static GLint active_texture = 0;
     static float *view_matrix = nullptr;
     static float *proj_matrix = nullptr;
     static bool depth_test_disabled = false;
@@ -17,6 +18,8 @@ namespace debug {
     static void prepare() {
         glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
         Shader::use(0);
+        glGetIntegerv(GL_ACTIVE_TEXTURE, &active_texture);
+        glActiveTexture(GL_TEXTURE0);
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_CULL_FACE);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -24,6 +27,7 @@ namespace debug {
     }
 
     static void restore() {
+        glActiveTexture(active_texture);
         Shader::use(current_program);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_CULL_FACE);

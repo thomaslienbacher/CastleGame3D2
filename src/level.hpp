@@ -39,12 +39,29 @@ struct LevelFormatMeshBlob {
 };
 
 struct LevelFormatObject {
+    enum Type : uint32_t {
+        None = 0,
+        Rune = 1
+    };
+
     uint32_t id = 0;
-    uint32_t type = 0;
+    Type type = Type::None;
     char identifier[32] = {0};
     float position[3] = {0.f, 0.f, 0.f};
-    union {
+
+    union CustomData {
         char _phantom[24] = {0};
+
+        struct RuneObject {
+            enum Kind : uint32_t {
+                A = 0,
+                B = 1,
+                C = 2,
+            };
+
+            Kind kind;
+            float yrot;
+        } rune;
     } custom_data;
 } __attribute__ ((packed));
 
@@ -76,9 +93,11 @@ public:
 
     ~Level();
 
-    void draw();
+    void render();
 
     glm::vec3 get_spawnpoint();
+
+    std::vector<LevelFormatObject>& get_objects();
 };
 
 

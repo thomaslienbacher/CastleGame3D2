@@ -15,6 +15,7 @@
 #include "model.hpp"
 #include "level.hpp"
 #include "player.hpp"
+#include "rune.hpp"
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
@@ -22,10 +23,8 @@ class Game {
     Shader *overlaying_shader;
     Player *player;
     Level *level;
-    Texture *diffuse_rune;
     Texture *overlay;
-    GeometryFormat *rune_geo;
-    Mesh *rune_mesh;
+    std::vector<Rune *> runes;
 
 public:
     rp3d::PhysicsCommon physx;

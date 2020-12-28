@@ -49,17 +49,17 @@ Texture::~Texture() {
 }
 
 static GLuint texture_in_use = 0;
+static GLuint active_texture = 0;
 
 void Texture::bind() {
-    glActiveTexture(GL_TEXTURE0);//TODO: check if needed
-    if (id != texture_in_use) {
-        glBindTexture(GL_TEXTURE_2D, id);
-        texture_in_use = id;
-    }
+    bind(id);
 }
 
 void Texture::bind(GLuint id) {
-    glActiveTexture(GL_TEXTURE0);//TODO: check if needed
+    if (active_texture != GL_TEXTURE0) {
+        glActiveTexture(GL_TEXTURE0);
+        active_texture = GL_TEXTURE0;
+    }
     if (id != texture_in_use) {
         glBindTexture(GL_TEXTURE_2D, id);
         texture_in_use = id;
@@ -67,7 +67,10 @@ void Texture::bind(GLuint id) {
 }
 
 void Texture::bind_unit(int unit) const {
-    glActiveTexture(GL_TEXTURE0 + unit);
+    if (active_texture != GL_TEXTURE0 + unit) {
+        glActiveTexture(GL_TEXTURE0 + unit);
+        active_texture = GL_TEXTURE0 + unit;
+    }
     if (id != texture_in_use) {
         glBindTexture(GL_TEXTURE_2D, id);
         texture_in_use = id;

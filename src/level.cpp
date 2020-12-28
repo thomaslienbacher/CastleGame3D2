@@ -5,6 +5,7 @@
 #include "level.hpp"
 #include "utils.hpp"
 #include "debug.hpp"
+#include "collisionhandler.hpp"
 
 LevelFormat::LevelFormat(std::string levelfile) {
     std::ifstream in;
@@ -44,7 +45,6 @@ LevelFormat::LevelFormat(std::string levelfile) {
         objects.emplace_back(LevelFormatObject());
         in.read((char *) &objects.back(), sizeof(LevelFormatObject));
     }
-
     in.close();
 }
 
@@ -70,6 +70,7 @@ Level::Level(std::string levelfile, std::string texture, rp3d::PhysicsCommon *ph
 
     for (int i = 0; i < format.header.num_meshes; i++) {
         auto body = world->createRigidBody(rp3d::Transform::identity());
+        body->setUserData(BodyIdentifier::LEVEL.as_ptr());
         body->setType(rp3d::BodyType::STATIC);
         bodies.push_back(body);
         auto tri_mesh = physx->createTriangleMesh();
@@ -118,7 +119,7 @@ Level::~Level() {
     }
 }
 
-void Level::draw() {
+void Level::render() {
     texture->bind();
     for (auto m : meshes) {
         m->bind();
@@ -132,4 +133,8 @@ void Level::draw() {
 
 glm::vec3 Level::get_spawnpoint() {
     return glm::vec3(format.header.spawnpoint[0], format.header.spawnpoint[1], format.header.spawnpoint[2]);
+}
+
+std::vector<LevelFormatObject> &Level::get_objects() {
+    return format.objects;
 }

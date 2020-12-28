@@ -6,6 +6,7 @@
 #include "window.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/epsilon.hpp>
+#include "collisionhandler.hpp"
 
 Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world) :
         position(spawnpoint),
@@ -18,6 +19,7 @@ Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWo
 
     rp3d::Transform transform({spawnpoint.x, spawnpoint.y + 0.01f, spawnpoint.z}, rp3d::Quaternion::identity());
     body = world->createRigidBody(transform);
+    body->setUserData(BodyIdentifier::PLAYER.as_ptr());
     shape = physx->createCapsuleShape(RADIUS, HEIGHT - (RADIUS * 2.0f));
     auto c = body->addCollider(shape, rp3d::Transform({0.f, HEIGHT / 2.0f, 0.f}, rp3d::Quaternion::identity()));
     body->setLinearDamping(0.9f);

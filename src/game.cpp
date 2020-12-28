@@ -2,6 +2,7 @@
 // Created by Thomas Lienbacher on 21.12.2020.
 //
 
+#include <glm/gtc/matrix_transform.hpp>
 #include "game.hpp"
 #include "debug.hpp"
 #include "window.hpp"
@@ -33,11 +34,21 @@ Game::Game() : physx() {
     auto fs = utils::file_to_string("data/common_fs.glsl");
     simple_shader = new Shader(vs, fs);
 
+    vs = utils::file_to_string("data/overlay_vs.glsl");
+    fs = utils::file_to_string("data/overlay_fs.glsl");
+    overlaying_shader = new Shader(vs, fs);
+
 
     level = new Level(R"(E:\Thomas\Blender\training\level_format\basic_level.level)",
                       R"(E:\Thomas\Blender\training\level_format\level_textured_test.png)",
                       &physx, world);
     player = new Player(level->get_spawnpoint(), &physx, world);
+
+    diffuse_rune = new Texture("data/rune_a.png");
+    overlay = new Texture("data/highlight.png");
+    auto s = std::string(R"(E:\Thomas\CLion-Workspace\CastleGame3D2\Assets\runes\rune_a\rune_a.model)");
+    rune_geo = new GeometryFormat(s);
+    rune_mesh = new Mesh(rune_geo);
 }
 
 Game::~Game() {
@@ -60,9 +71,26 @@ void Game::render() {
     simple_shader->use();
     simple_shader->set_uniform("u_proj", player->camera().get_proj_mat());
     simple_shader->set_uniform("u_view", player->get_view_mat());
-    simple_shader->set_uniform("u_model", glm::mat4(1.0f));
 
+    simple_shader->set_uniform("u_model", glm::mat4(1.0f));
     level->draw();
+
+    overlaying_shader->use();
+    overlaying_shader->set_uniform("u_proj", player->camera().get_proj_mat());
+    overlaying_shader->set_uniform("u_view", player->get_view_mat());
+
+    static float time = 0;
+    time += 1.0f / 60.f;
+    auto model = glm::mat4(1.0f);
+    model = glm::translate(model, {0.f, 0.5f + std::sin(time * 1.8f) * 0.1f, -5.f});
+    //model  = glm::rotate(model, glm::radians(time * 90.f), glm::vec3(0, 1, 0));
+    model = glm::scale(model, glm::vec3(1.0f));
+    overlaying_shader->set_uniform("u_model", model);
+    overlaying_shader->set_uniform("u_offset", glm::vec2(time * 0.3f));
+    rune_mesh->bind();
+    diffuse_rune->bind_unit(0);
+    overlay->bind_unit(1);
+    glDrawElements(GL_TRIANGLES, rune_mesh->get_num_elements(), GL_UNSIGNED_INT, nullptr);
 
     //debug::render_physics(debug_renderer);
     debug::set_color(0.7f, 0.7f, 0.7f);

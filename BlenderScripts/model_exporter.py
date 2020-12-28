@@ -21,8 +21,6 @@ bmesh.ops.rotate(bm,
     verts=bm.verts,
     cent=(0.0, 0.0, 0.0),
     matrix=mathutils.Matrix.Rotation(math.radians(-90.0), 3, 'Y'))
-    
-bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
 
 bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method="BEAUTY")
 

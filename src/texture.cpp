@@ -35,6 +35,9 @@ Texture::Texture(std::filesystem::path &&path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -48,6 +51,7 @@ Texture::~Texture() {
 static GLuint texture_in_use = 0;
 
 void Texture::bind() {
+    glActiveTexture(GL_TEXTURE0);//TODO: check if needed
     if (id != texture_in_use) {
         glBindTexture(GL_TEXTURE_2D, id);
         texture_in_use = id;
@@ -55,6 +59,15 @@ void Texture::bind() {
 }
 
 void Texture::bind(GLuint id) {
+    glActiveTexture(GL_TEXTURE0);//TODO: check if needed
+    if (id != texture_in_use) {
+        glBindTexture(GL_TEXTURE_2D, id);
+        texture_in_use = id;
+    }
+}
+
+void Texture::bind_unit(int unit) const {
+    glActiveTexture(GL_TEXTURE0 + unit);
     if (id != texture_in_use) {
         glBindTexture(GL_TEXTURE_2D, id);
         texture_in_use = id;

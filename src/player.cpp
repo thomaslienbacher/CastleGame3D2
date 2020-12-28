@@ -5,6 +5,7 @@
 #include "player.hpp"
 #include "window.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/epsilon.hpp>
 
 Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world) :
         position(spawnpoint),
@@ -20,7 +21,7 @@ Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWo
     shape = physx->createCapsuleShape(RADIUS, HEIGHT - (RADIUS * 2.0f));
     auto c = body->addCollider(shape, rp3d::Transform({0.f, HEIGHT / 2.0f, 0.f}, rp3d::Quaternion::identity()));
     body->setLinearDamping(0.9f);
-    c->getMaterial().setBounciness(0.0007f);
+    c->getMaterial().setBounciness(0.f);
 
     glfwGetCursorPos(window::glfw_window, &last_mousex, &last_mousey);
 }
@@ -55,11 +56,12 @@ void Player::update(float delta) {
         v *= MAX_SPEED;
         v.y = y;
         body->setLinearVelocity(v);
-
-        if (y < 0.f) {
-            force.y -= 1.5f;
-        }
     }
+
+    if (body->getLinearVelocity().y < 0.f) {
+        force.y -= 19.5f;
+    }
+
 
     if (window::is_key_pressed(GLFW_KEY_W)) {
         rp3d::Vector3 a = {std::cos(glm::radians(cam.yaw - 90.0f)),

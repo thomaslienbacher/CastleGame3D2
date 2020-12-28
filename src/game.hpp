@@ -19,8 +19,13 @@
 class Game {
     rp3d::DebugRenderer *debug_renderer;
     Shader *simple_shader;
+    Shader *overlaying_shader;
     Player *player;
     Level *level;
+    Texture *diffuse_rune;
+    Texture *overlay;
+    GeometryFormat *rune_geo;
+    Mesh *rune_mesh;
 
 public:
     rp3d::PhysicsCommon physx;

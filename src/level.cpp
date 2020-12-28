@@ -88,7 +88,8 @@ Level::Level(std::string levelfile, std::string texture, rp3d::PhysicsCommon *ph
         tri_mesh->addSubpart(trivertexarray);
         auto shape = physx->createConcaveMeshShape(tri_mesh);
         shapes.push_back(shape);
-        body->addCollider(shape, rp3d::Transform::identity());
+        auto c = body->addCollider(shape, rp3d::Transform::identity());
+        c->getMaterial().setBounciness(0.f);
     }
 
 }

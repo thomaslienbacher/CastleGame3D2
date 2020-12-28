@@ -19,6 +19,8 @@ public:
 
     void bind();
 
+    void bind_unit(int unit) const;
+
     static void bind(GLuint id);
 };
 

@@ -45,6 +45,7 @@ LevelFormat::LevelFormat(std::string levelfile) {
         objects.emplace_back(LevelFormatObject());
         in.read((char *) &objects.back(), sizeof(LevelFormatObject));
     }
+
     in.close();
 }
 
@@ -119,16 +120,13 @@ Level::~Level() {
     }
 }
 
-void Level::render() {
+void Level::render(Shader *simple_shader) {
+    simple_shader->set_uniform("u_model", glm::mat4(1.0f));
     texture->bind();
     for (auto m : meshes) {
         m->bind();
         glDrawElements(GL_TRIANGLES, m->get_num_elements(), GL_UNSIGNED_INT, nullptr);
     }
-
-    debug::set_color(1.0f, 1.0f, 1.0f);
-    auto f = format.objects.begin()->position;
-    //debug::sphere(glm::vec3(f[0], f[1], f[2]), 0.3f);
 }
 
 glm::vec3 Level::get_spawnpoint() {

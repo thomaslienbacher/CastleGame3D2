@@ -82,7 +82,7 @@ MAGIC = 0x4c444f4d
 VERSION = 2
 FLAGS = 1
 
-identifier = geometry_name + "@blender"
+identifier = geometry_name + "@" + bpy.context.object.name + "@blender"
 
 print(identifier)
 
@@ -92,9 +92,7 @@ if len(identifier) > 31:
 
 with open(newfile, 'wb') as file:
     # write basic info
-    file.write(struct.pack("<I", MAGIC))
-    file.write(struct.pack("<I", VERSION))
-    file.write(struct.pack("<I", FLAGS))
+    file.write(struct.pack("<III", MAGIC, VERSION, FLAGS))
     
     # write identifier
     for i in range(32):
@@ -106,26 +104,20 @@ with open(newfile, 'wb') as file:
         file.write(struct.pack("<c", c.encode('ascii')))
         
     # write number ofs
-    file.write(struct.pack("<I", len(indices)))
-    file.write(struct.pack("<I", len(list_vertices)))
+    file.write(struct.pack("<II", len(indices), len(list_vertices)))
     
     # mesh info
     for idx in indices:
         file.write(struct.pack("<I", idx))
     
     for v in list_vertices:
-        file.write(struct.pack("<f", v[0].x))
-        file.write(struct.pack("<f", v[0].y))
-        file.write(struct.pack("<f", v[0].z))
+        file.write(struct.pack("<fff", v[0].x, v[0].y, v[0].z))
         
     for v in list_vertices:
-        file.write(struct.pack("<f", v[1].x))
-        file.write(struct.pack("<f", v[1].y))
+        file.write(struct.pack("<ff", v[1].x, v[1].y))
         
     for v in list_vertices:
-        file.write(struct.pack("<f", v[2].x))
-        file.write(struct.pack("<f", v[2].y))
-        file.write(struct.pack("<f", v[2].z))
+        file.write(struct.pack("<fff", v[2].x, v[2].y, v[2].z))
         
     file.flush()
     

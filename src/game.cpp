@@ -39,7 +39,7 @@ Game::Game() : physx() {
     overlaying_shader = new Shader(vs, fs);
 
 
-    level = new Level(R"(E:\Thomas\Blender\training\level_format\basic_level_runes.level)",
+    level = new Level(R"(E:\Thomas\Blender\training\level_format\basic_level_doors.level)",
                       R"(E:\Thomas\Blender\training\level_format\level_textured_test.png)",
                       &physx, world);
     player = new Player(level->get_spawnpoint(), &physx, world);
@@ -67,12 +67,26 @@ Game::Game() : physx() {
                               &physx, world);
             runes.emplace_back(r);
         }
+
+        if (o.type == LevelFormatObject::Type::Door) {
+            auto dd = o.custom_data.door;
+            auto d = new Door(R"(E:\Thomas\Blender\training\level_format\basic_level_doors.model)",
+                              R"(E:\Thomas\Blender\training\level_format\door.png)",
+                              {o.position[0], o.position[1], o.position[2]},
+                              dd.yrot,
+                              {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
+                              &physx, world, runes[0]);
+            doors.emplace_back(d);
+        }
     }
 }
 
 Game::~Game() {
     for (auto r : runes) {
         delete r;
+    }
+    for (auto d : doors) {
+        delete d;
     }
     delete overlay;
     delete overlaying_shader;
@@ -91,6 +105,9 @@ void Game::update(float delta) {
     for (auto r : runes) {
         r->update(delta);
     }
+    for (auto d : doors) {
+        d->update(delta);
+    }
 }
 
 void Game::render() {
@@ -98,8 +115,11 @@ void Game::render() {
 
     simple_shader->set_uniform("u_proj", player->camera().get_proj_mat());
     simple_shader->set_uniform("u_view", player->get_view_mat());
-    simple_shader->set_uniform("u_model", glm::mat4(1.0f));
-    level->render();
+    level->render(simple_shader);
+
+    for (auto d : doors) {
+        d->render(simple_shader);
+    }
 
     overlaying_shader->set_uniform("u_proj", player->camera().get_proj_mat());
     overlaying_shader->set_uniform("u_view", player->get_view_mat());

@@ -29,8 +29,8 @@ Rune::~Rune() {
 }
 
 void Rune::update(float delta) {
+    if (collected) return;
     time += delta;
-    collected = false;
     auto c = CollisionHandler(BodyIdentifier::RUNE, [this](BodyIdentifier other, CollisionType type) {
         collected = other == BodyIdentifier::PLAYER;
     });
@@ -49,4 +49,8 @@ void Rune::render(Shader *overlaying_shader) {
     diffuse->bind_unit(0);
     overlay->bind_unit(1);
     glDrawElements(GL_TRIANGLES, mesh->get_num_elements(), GL_UNSIGNED_INT, nullptr);
+}
+
+bool Rune::is_collected() const {
+    return collected;
 }

@@ -10,10 +10,11 @@
 #include <glm/glm.hpp>
 #include "texture.hpp"
 #include "mesh.hpp"
+#include "shader.hpp"
 
 //TODO: put constants into namespace or struct
 const uint32_t LEVEL_MAGIC = 0x4c56454c;
-const uint32_t LEVEL_VERSION = 0x1;
+const uint32_t LEVEL_VERSION = 0x3;
 
 struct LevelFormatHeader {
     uint32_t magic = 0;
@@ -41,7 +42,8 @@ struct LevelFormatMeshBlob {
 struct LevelFormatObject {
     enum Type : uint32_t {
         None = 0,
-        Rune = 1
+        Rune = 1,
+        Door = 2
     };
 
     uint32_t id = 0;
@@ -62,6 +64,12 @@ struct LevelFormatObject {
             Kind kind;
             float yrot;
         } rune;
+
+        struct DoorObject {
+            float dimensions[3];
+            float yrot;
+            RuneObject::Kind trigger;
+        } door;
     } custom_data;
 } __attribute__ ((packed));
 
@@ -93,7 +101,7 @@ public:
 
     ~Level();
 
-    void render();
+    void render(Shader *simple_shader);
 
     glm::vec3 get_spawnpoint();
 

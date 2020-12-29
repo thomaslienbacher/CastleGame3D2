@@ -16,6 +16,7 @@
 #include "level.hpp"
 #include "player.hpp"
 #include "rune.hpp"
+#include "door.hpp"
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
@@ -25,6 +26,7 @@ class Game {
     Level *level;
     Texture *overlay;
     std::vector<Rune *> runes;
+    std::vector<Door *> doors;
 
 public:
     rp3d::PhysicsCommon physx;

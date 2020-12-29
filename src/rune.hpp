@@ -37,6 +37,8 @@ public:
     void update(float delta);
 
     void render(Shader *overlaying_shader);
+
+    bool is_collected() const;
 };
 
 

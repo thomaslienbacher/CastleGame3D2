@@ -19,7 +19,7 @@ namespace window {
 
     static void debug_msg_callback(GLenum source, GLenum type, GLuint id,
                                    GLenum severity, GLsizei length, const GLchar *message, const void *userParam) {
-
+        if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;
         const char *severity_str = nullptr;
 
         switch (severity) {
@@ -110,6 +110,7 @@ namespace window {
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_SAMPLES, 4);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
 
         glfw_window = glfwCreateWindow(1280, 720, "CastleGame3D2", nullptr, nullptr);
 

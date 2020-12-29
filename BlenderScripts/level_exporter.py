@@ -11,7 +11,7 @@ import array
 from pprint import pprint
 
 MAGIC = 0x4c56454c
-VERSION = 1
+VERSION = 3
 FLAGS = 1
 
 
@@ -137,7 +137,8 @@ def write_level_meshes(file):
 struct LevelFormatObject {
     enum Type : uint32_t {
         None = 0,
-        Rune = 1
+        Rune = 1,
+        Door = 2
     };
 
     uint32_t id = 0;
@@ -145,7 +146,7 @@ struct LevelFormatObject {
     char identifier[32] = {0};
     float position[3] = {0.f, 0.f, 0.f};
 
-    union {
+    union CustomData {
         char _phantom[24] = {0};
 
         struct RuneObject {
@@ -158,6 +159,12 @@ struct LevelFormatObject {
             Kind kind;
             float yrot;
         } rune;
+        
+        struct DoorObject {
+            float dimensions[3];
+            float yrot;
+            RuneObject::Kind trigger;
+        } door;
     } custom_data;
 } __attribute__ ((packed));
 """
@@ -190,13 +197,24 @@ def extract_level_objects():
         if type == 1:
             kind = o.data.get("kind")
             yrot = math.degrees(o.rotation_euler.z)
-            print(yrot)
             
             if kind == None:
                 raise Exception("incomplete definition " + o.name)
             
             buffer = array.array('B', [0 for i in range(24)])
             struct.pack_into("<If", buffer, 0, kind, yrot)
+            new["custom_data"] = bytes(buffer)
+            
+        if type == 2:
+            dimensions = o.dimensions
+            yrot = math.degrees(o.rotation_euler.z)
+            trigger = o.data.get("trigger")
+            
+            if trigger == None:
+                raise Exception("incomplete definition " + o.name)
+            
+            buffer = array.array('B', [0 for i in range(24)])
+            struct.pack_into("<ffffI", buffer, 0, dimensions.y, dimensions.z, dimensions.x, yrot, trigger)
             new["custom_data"] = bytes(buffer)
             
         if new.get("custom_data") == None:

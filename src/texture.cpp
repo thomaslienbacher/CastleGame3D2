@@ -6,8 +6,7 @@
 #include "texture.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-
-#include "../stb_image/stb_image.h"
+#include <stb/stb_image.h>
 
 Texture::Texture(std::filesystem::path &&path) {
     int width, height, channels;

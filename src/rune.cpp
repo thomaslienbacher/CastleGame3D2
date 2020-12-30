@@ -6,9 +6,9 @@
 #include "rune.hpp"
 #include "collisionhandler.hpp"
 
-Rune::Rune(std::string model, std::string diffuse_texture, Texture *overlay, glm::vec3 position, float yrot,
+Rune::Rune(std::string model, std::string diffuse_texture, Texture *overlay, glm::vec3 position, float yrot, Kind kind,
            rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world) :
-        position(position), yrot(yrot), time(0.f), collected(false), overlay(overlay), physx(physx), world(world) {
+        position(position), yrot(yrot), time(0.f), collected(false), kind(kind), overlay(overlay), physx(physx), world(world) {
     geometry = new GeometryFormat(model);
     mesh = new Mesh(geometry);
     diffuse = new Texture(diffuse_texture);
@@ -53,4 +53,8 @@ void Rune::render(Shader *overlaying_shader) {
 
 bool Rune::is_collected() const {
     return collected;
+}
+
+Rune::Kind Rune::get_kind() const {
+    return kind;
 }

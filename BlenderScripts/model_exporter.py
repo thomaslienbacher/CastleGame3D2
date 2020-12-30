@@ -30,10 +30,6 @@ basedir = os.path.dirname(bpy.data.filepath)
 
 if not basedir:
     raise Exception("Blend file is not saved")
-
-
-geometry_name = Path(bpy.data.filepath).stem
-newfile = os.path.join(basedir, geometry_name + ".model")
     
 bm.verts.ensure_lookup_table()
 bm.faces.ensure_lookup_table()
@@ -82,13 +78,14 @@ MAGIC = 0x4c444f4d
 VERSION = 2
 FLAGS = 1
 
-identifier = geometry_name + "@" + bpy.context.object.name + "@blender"
+geometry_name = Path(bpy.data.filepath).stem
+identifier = geometry_name + "@" + bpy.context.object.name + "@blend"
+newfile = os.path.join(basedir, geometry_name + "_" + bpy.context.object.name + ".model")
 
 print(identifier)
 
 if len(identifier) > 31:
-    print("ERROR: identifier too long!")
-    exit(1)
+    raise Exception("identifier too long:", len(identifier))
 
 with open(newfile, 'wb') as file:
     # write basic info

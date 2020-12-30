@@ -214,7 +214,7 @@ def extract_level_objects():
                 raise Exception("incomplete definition " + o.name)
             
             buffer = array.array('B', [0 for i in range(24)])
-            struct.pack_into("<ffffI", buffer, 0, dimensions.y, dimensions.z, dimensions.x, yrot, trigger)
+            struct.pack_into("<ffffI", buffer, 0, dimensions.y, dimensions.z, 0.6, yrot, trigger)
             new["custom_data"] = bytes(buffer)
             
         if new.get("custom_data") == None:

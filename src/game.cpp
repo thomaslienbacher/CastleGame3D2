@@ -64,18 +64,33 @@ Game::Game() : physx() {
             }
 
             auto r = new Rune(mod, tex, overlay, {o.position[0], o.position[1], o.position[2]}, o.custom_data.rune.yrot,
-                              &physx, world);
+                              o.custom_data.rune.kind, &physx, world);
             runes.emplace_back(r);
         }
 
         if (o.type == LevelFormatObject::Type::Door) {
             auto dd = o.custom_data.door;
-            auto d = new Door(R"(E:\Thomas\Blender\training\level_format\basic_level_doors.model)",
-                              R"(E:\Thomas\Blender\training\level_format\door.png)",
-                              {o.position[0], o.position[1], o.position[2]},
-                              dd.yrot,
-                              {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
-                              &physx, world, runes[0]);
+            auto rune = *std::find_if(runes.begin(), runes.end(), [&](Rune *r) {
+                return dd.trigger == r->get_kind();
+            });
+
+            Door *d;
+            if (dd.trigger == LevelFormatObject::CustomData::RuneObject::A) {
+                d = new Door(R"(E:\Thomas\Blender\training\level_format\basic_level_doors_door_a.model)",
+                             R"(E:\Thomas\Blender\training\level_format\door_a.png)",
+                             {o.position[0], o.position[1], o.position[2]},
+                             dd.yrot,
+                             {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
+                             &physx, world, rune);
+            } else if (dd.trigger == LevelFormatObject::CustomData::RuneObject::B) {
+
+                d = new Door(R"(E:\Thomas\Blender\training\level_format\basic_level_doors_door_b.model)",
+                             R"(E:\Thomas\Blender\training\level_format\door_b.png)",
+                             {o.position[0], o.position[1], o.position[2]},
+                             dd.yrot,
+                             {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
+                             &physx, world, rune);
+            }
             doors.emplace_back(d);
         }
     }

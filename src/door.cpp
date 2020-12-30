@@ -8,7 +8,7 @@
 
 Door::Door(std::string model, std::string texture, glm::vec3 position, float yrot, glm::vec3 dimensions,
            rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world, Rune *trigger) :
-        position(position), yrot(yrot), opening(false), open_distance(0.f), max_open_distance(dimensions.y + 0.1f),
+        position(position), yrot(yrot), opening(false), open_distance(0.f), max_open_distance(dimensions.y + 0.3f),
         physx(physx), world(world), trigger(trigger) {
 
     geometry = new GeometryFormat(model);

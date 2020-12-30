@@ -6,3 +6,6 @@
 	path = reactphysics3d
 	url = https://github.com/DanielChappuis/reactphysics3d.git
 	branch = v0.8.0
+[submodule "stb"]
+	path = stb
+	url = https://github.com/nothings/stb.git

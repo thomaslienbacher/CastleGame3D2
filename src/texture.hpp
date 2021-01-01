@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_TEXTURE_HPP
 #define CASTLEGAME3D2_TEXTURE_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <filesystem>
 
 class Texture {

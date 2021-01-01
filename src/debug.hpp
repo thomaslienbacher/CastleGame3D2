@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_DEBUG_HPP
 #define CASTLEGAME3D2_DEBUG_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <glm/common.hpp>
 #include <glm/glm.hpp>
 #include "camera.hpp"

@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_MODEL_HPP
 #define CASTLEGAME3D2_MODEL_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include "geometry.hpp"
 #include "mesh.hpp"
 #include "texture.hpp"

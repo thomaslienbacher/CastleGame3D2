@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_SHADER_HPP
 #define CASTLEGAME3D2_SHADER_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include <string>

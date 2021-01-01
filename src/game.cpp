@@ -8,7 +8,7 @@
 #include "window.hpp"
 #include "utils.hpp"
 
-Game::Game() : physx() {
+Game::Game() : physx(), sound("data/bounce.ogg") {
     auto settings = rp3d::PhysicsWorld::WorldSettings();
     settings.gravity = rp3d::Vector3(0.f, -10.0f, 0.f);
     settings.worldName = "main_world";
@@ -94,6 +94,10 @@ Game::Game() : physx() {
             doors.emplace_back(d);
         }
     }
+
+    source.play(sound);
+    source.set_pitch(0.8f);
+    source.set_looping(true);
 }
 
 Game::~Game() {
@@ -122,6 +126,19 @@ void Game::update(float delta) {
     }
     for (auto d : doors) {
         d->update(delta);
+    }
+
+    static float time = 0;
+    time += delta;
+    const float radius = 3.0f;
+    source.set_position({std::cos(time) * radius, 0.f, std::sin(time) * radius});
+    SoundListener::set_position({0.f, 0.f, 0.f});
+
+    if (window::is_key_pressed(GLFW_KEY_P)) {
+        window::pause_audio();
+    }
+    if (window::is_key_pressed(GLFW_KEY_O)) {
+        window::resume_audio();
     }
 }
 

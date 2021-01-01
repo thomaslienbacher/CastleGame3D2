@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_GAME_HPP
 #define CASTLEGAME3D2_GAME_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <reactphysics3d/reactphysics3d.h>
 #include "camera.hpp"
 #include "shader.hpp"
@@ -17,6 +17,7 @@
 #include "player.hpp"
 #include "rune.hpp"
 #include "door.hpp"
+#include "sound.hpp"
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
@@ -27,6 +28,8 @@ class Game {
     Texture *overlay;
     std::vector<Rune *> runes;
     std::vector<Door *> doors;
+    Sound sound;
+    SoundSource source;
 
 public:
     rp3d::PhysicsCommon physx;

@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_RUNE_HPP
 #define CASTLEGAME3D2_RUNE_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <glm/glm.hpp>
 #include "geometry.hpp"
 #include "mesh.hpp"

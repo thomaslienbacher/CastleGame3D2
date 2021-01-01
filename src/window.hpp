@@ -6,7 +6,7 @@
 #define CASTLEGAME3D2_WINDOW_HPP
 
 #include <functional>
-#include "master.hpp"
+#include "glalheaders.hpp"
 
 namespace window {
     extern GLFWwindow *glfw_window;
@@ -20,6 +20,10 @@ namespace window {
     void add_on_resize(const std::function<void(int, int)>& func);//TODO: remove hacky workaround
 
     bool is_key_pressed(int key);
+
+    void pause_audio();
+
+    void resume_audio();
 }
 
 #endif //CASTLEGAME3D2_WINDOW_HPP

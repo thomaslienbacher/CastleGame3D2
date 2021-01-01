@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_MESH_HPP
 #define CASTLEGAME3D2_MESH_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include "geometry.hpp"
 
 class Mesh {

@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_LEVEL_HPP
 #define CASTLEGAME3D2_LEVEL_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
 #include "texture.hpp"

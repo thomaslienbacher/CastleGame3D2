@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_PLAYER_HPP
 #define CASTLEGAME3D2_PLAYER_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include "camera.hpp"
 #include <glm/glm.hpp>
 #include <reactphysics3d/reactphysics3d.h>

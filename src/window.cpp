@@ -2,12 +2,15 @@
 // Created by Thomas Lienbacher on 05.12.2020.
 //
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include "window.hpp"
 #include <cstdio>
+#include <iostream>
 
 namespace window {
     GLFWwindow *glfw_window = nullptr;
+    static ALCdevice *al_device;
+    static ALCcontext *al_context;
     static std::vector<std::function<void(int, int)>> on_resizes;
 
     static void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
@@ -100,11 +103,12 @@ namespace window {
     }
 
     void init() {
+        //opengl and window init
         glfwInit();
 
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
@@ -118,6 +122,8 @@ namespace window {
         glfwMakeContextCurrent(glfw_window);
         gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         glfwSwapInterval(1);
+
+        glfwFocusWindow(glfw_window);
 
 #ifdef DEBUG_BUILD
         glEnable(GL_DEBUG_OUTPUT);
@@ -134,9 +140,16 @@ namespace window {
 
         glPointSize(2);
         glLineWidth(2);
+
+        //openal init
+        al_device = alcOpenDevice(nullptr);
+        al_context = alcCreateContext(al_device, nullptr);
+        alcMakeContextCurrent(al_context);
     }
 
     void close() {
+        alcDestroyContext(al_context);
+        alcCloseDevice(al_device);
         glfwTerminate();
     }
 
@@ -152,5 +165,13 @@ namespace window {
 
     bool is_key_pressed(int key) {
         return glfwGetKey(glfw_window, key) & GLFW_PRESS;
+    }
+
+    void pause_audio() {
+        alcDevicePauseSOFT(al_device);
+    }
+
+    void resume_audio() {
+        alcDeviceResumeSOFT(al_device);
     }
 }

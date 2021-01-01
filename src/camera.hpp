@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_CAMERA_HPP
 #define CASTLEGAME3D2_CAMERA_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <glm/glm.hpp>
 
 class Camera {

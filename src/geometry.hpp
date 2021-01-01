@@ -5,7 +5,7 @@
 #ifndef CASTLEGAME3D2_GEOMETRY_HPP
 #define CASTLEGAME3D2_GEOMETRY_HPP
 
-#include "master.hpp"
+#include "glalheaders.hpp"
 #include <fstream>
 #include <cstdint>
 

@@ -12,8 +12,6 @@ int main() {
     {
         Game game;
 
-        glfwSetInputMode(window::glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
         double lastTime = 0;
         bool maximized = false;
 

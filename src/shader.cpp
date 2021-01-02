@@ -95,6 +95,23 @@ void Shader::set_uniform(std::string &&name, glm::vec2 val) {
     }
 }
 
+void Shader::set_uniform(std::string &&name, glm::vec3 val) {
+    use();
+
+    if (uniform_locations.contains(name)) {
+        glUniform3f(uniform_locations[name], val.x, val.y, val.z);
+    } else {
+        GLint loc = glGetUniformLocation(program, name.c_str());
+
+        if (loc == -1) {
+            std::cerr << "Uniform " << name << " no location" << panic;
+        }
+
+        uniform_locations[name] = loc;
+        glUniform3f(uniform_locations[name], val.x, val.y, val.z);
+    }
+}
+
 void Shader::use(GLuint program) {
     if (program != program_in_use) {
         glUseProgram(program);

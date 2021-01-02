@@ -17,7 +17,6 @@ class Player {
     static constexpr float MAX_SPEED = 9.0f;
 
     Camera cam;
-    glm::vec3 position;
     rp3d::RigidBody *body;
     rp3d::CapsuleShape *shape;
     rp3d::PhysicsCommon *physx;
@@ -34,6 +33,8 @@ public:
     Camera& camera();
 
     glm::mat4 get_view_mat();
+
+    const glm::vec3 &get_position() const;
 };
 
 

@@ -28,6 +28,8 @@ public:
 
     void set_uniform(std::string &&name, glm::vec2 val);
 
+    void set_uniform(std::string &&name, glm::vec3 val);
+
     void use() const;
 
     static void use(GLuint program);

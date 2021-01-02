@@ -124,6 +124,7 @@ namespace window {
         glfwSwapInterval(1);
 
         glfwFocusWindow(glfw_window);
+        glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 #ifdef DEBUG_BUILD
         glEnable(GL_DEBUG_OUTPUT);

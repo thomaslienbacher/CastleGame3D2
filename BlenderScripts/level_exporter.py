@@ -99,7 +99,8 @@ def write_level_meshes(file):
                 vert = loop.vert
                 position = vert.co
                 texcoord = uv
-                normal = face.normal
+                normal = loop.vert.normal
+                #normal = face.normal
                 
                 pac = (position, texcoord, normal)
                 

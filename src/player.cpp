@@ -8,8 +8,7 @@
 #include <glm/gtc/epsilon.hpp>
 #include "collisionhandler.hpp"
 
-Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world) :
-        position(spawnpoint),
+Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world):
         physx(physx),
         world(world) {
     cam.position = spawnpoint + glm::vec3(0, EYE_HEIGHT - 1.0f, 3.0f);
@@ -108,4 +107,8 @@ Camera &Player::camera() {
 
 glm::mat4 Player::get_view_mat() {
     return cam.get_view_mat();
+}
+
+const glm::vec3 &Player::get_position() const {
+    return cam.position;
 }

@@ -7,6 +7,7 @@
 
 #include <functional>
 #include "glalheaders.hpp"
+#include <glm/glm.hpp>
 
 namespace window {
     extern GLFWwindow *glfw_window;
@@ -24,6 +25,8 @@ namespace window {
     void pause_audio();
 
     void resume_audio();
+
+    glm::vec2 size();
 }
 
 #endif //CASTLEGAME3D2_WINDOW_HPP

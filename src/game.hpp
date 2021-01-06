@@ -18,11 +18,13 @@
 #include "rune.hpp"
 #include "door.hpp"
 #include "sound.hpp"
+#include "text.hpp"
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
     Shader *simple_shader;
     Shader *overlaying_shader;
+    Shader *font_shader;
     Player *player;
     Level *level;
     Texture *overlay;
@@ -30,6 +32,10 @@ class Game {
     std::vector<Door *> doors;
     Sound sound;
     SoundSource source;
+    Texture *font_texture;
+    Font *font;
+    Text *text;
+    float time;
 
 public:
     rp3d::PhysicsCommon physx;

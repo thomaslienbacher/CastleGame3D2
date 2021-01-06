@@ -33,6 +33,8 @@ public:
 
     void bind();
 
+    static void bind(GLuint vao);
+
     unsigned int get_num_elements() const;
 };
 

@@ -61,6 +61,13 @@ void Mesh::bind() {
     }
 }
 
+void Mesh::bind(GLuint vao) {
+    if (vao != vao_in_use) {
+        glBindVertexArray(vao);
+        vao_in_use = vao;
+    }
+}
+
 unsigned int Mesh::get_num_elements() const {
     return num_elements;
 }

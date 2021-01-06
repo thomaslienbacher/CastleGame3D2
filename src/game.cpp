@@ -8,7 +8,7 @@
 #include "window.hpp"
 #include "utils.hpp"
 
-Game::Game() : physx(), sound("data/bounce.ogg") {
+Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     auto settings = rp3d::PhysicsWorld::WorldSettings();
     settings.gravity = rp3d::Vector3(0.f, -10.0f, 0.f);
     settings.worldName = "main_world";
@@ -38,6 +38,9 @@ Game::Game() : physx(), sound("data/bounce.ogg") {
     fs = utils::file_to_string("data/overlay_fs.glsl");
     overlaying_shader = new Shader(vs, fs);
 
+    vs = utils::file_to_string("data/font_vs.glsl");
+    fs = utils::file_to_string("data/font_fs.glsl");
+    font_shader = new Shader(vs, fs);
 
     level = new Level(R"(E:\Thomas\Blender\training\level_format\basic_level_doors.level)",
                       R"(E:\Thomas\Blender\training\level_format\level_textured_test.png)",
@@ -95,12 +98,19 @@ Game::Game() : physx(), sound("data/bounce.ogg") {
         }
     }
 
+    font_texture = new Texture("data/cmb_font.png");
+    font = new Font("data/cmb_font.fontdef", font_texture);
+    text = new Text("Escape the maze", font);
+
     source.play(sound);
     source.set_pitch(0.8f);
-    source.set_looping(true);
+    source.set_looping(false);
 }
 
 Game::~Game() {
+    delete text;
+    delete font_texture;
+    delete font;
     for (auto r : runes) {
         delete r;
     }
@@ -108,6 +118,7 @@ Game::~Game() {
         delete d;
     }
     delete overlay;
+    delete font_shader;
     delete overlaying_shader;
     delete simple_shader;
     delete level;
@@ -116,6 +127,7 @@ Game::~Game() {
 }
 
 void Game::update(float delta) {
+    time += delta;
     world->update(1.0f / 60.0f);
     debug_renderer->reset();
     debug_renderer->computeDebugRenderingPrimitives(*world);
@@ -166,6 +178,18 @@ void Game::render() {
     }
     if (window::is_key_pressed(GLFW_KEY_F2)) {
         debug = false;
+    }
+
+    if (time <= 4.0f) {
+        glDisable(GL_DEPTH_TEST);
+        auto window_size = window::size();
+        font_shader->set_uniform("u_proj", glm::ortho(0.f, window_size.x, 0.f, window_size.y, -1.f, 1.f));
+        const float scale = 1.1f;
+        auto translate = glm::translate(glm::mat4(1.0f),
+                                        {-text->get_width() / 2.f * scale + window_size.x / 2.0f, 10.f, 0.f});
+        font_shader->set_uniform("u_model", glm::scale(translate, glm::vec3(scale)));
+        text->render(font_shader);
+        glEnable(GL_DEPTH_TEST);
     }
 
     if (debug) {

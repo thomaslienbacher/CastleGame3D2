@@ -11,7 +11,7 @@ elseif (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     add_definitions("-DDEBUG_BUILD")
 endif ()
 
-set(SOURCES src/main.cpp src/window.cpp src/window.hpp src/glalheaders.hpp src/mesh.cpp src/mesh.hpp src/shader.cpp src/shader.hpp src/utils.cpp src/utils.hpp src/texture.cpp src/texture.hpp src/camera.cpp src/camera.hpp src/debug.cpp src/debug.hpp src/geometry.cpp src/geometry.hpp src/game.cpp src/game.hpp src/model.cpp src/model.hpp src/level.cpp src/level.hpp src/player.cpp src/player.hpp src/rune.cpp src/rune.hpp src/collisionhandler.cpp src/collisionhandler.hpp src/door.cpp src/door.hpp src/sound.cpp src/sound.hpp)
+set(SOURCES src/main.cpp src/window.cpp src/window.hpp src/glalheaders.hpp src/mesh.cpp src/mesh.hpp src/shader.cpp src/shader.hpp src/utils.cpp src/utils.hpp src/texture.cpp src/texture.hpp src/camera.cpp src/camera.hpp src/debug.cpp src/debug.hpp src/geometry.cpp src/geometry.hpp src/game.cpp src/game.hpp src/model.cpp src/model.hpp src/level.cpp src/level.hpp src/player.cpp src/player.hpp src/rune.cpp src/rune.hpp src/collisionhandler.cpp src/collisionhandler.hpp src/door.cpp src/door.hpp src/sound.cpp src/sound.hpp src/text.cpp src/text.hpp)
 
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)

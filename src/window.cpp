@@ -175,4 +175,10 @@ namespace window {
     void resume_audio() {
         alcDeviceResumeSOFT(al_device);
     }
+
+    glm::vec2 size() {
+        int width, height;
+        glfwGetFramebufferSize(glfw_window, &width, &height);
+        return glm::vec2((float) width, (float) height);
+    }
 }

@@ -177,6 +177,7 @@ Text::Text(std::string text, Font *font) : font(font) {
         vertices[i * 12 + 11] = bc.height;
 
         x_advance += bc.width;
+        height = bc.height;
 
         auto uv = bc.uvs.points;
         //triangle 1
@@ -235,4 +236,8 @@ void Text::render(Shader *font_shader) {
 
 float Text::get_width() const {
     return width;
+}
+
+float Text::get_height() const {
+    return height;
 }

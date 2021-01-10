@@ -11,8 +11,8 @@ import array
 from pprint import pprint
 
 MAGIC = 0x4c56454c
-VERSION = 3
-FLAGS = 1
+VERSION = 4
+FLAGS = 0
 
 
 def write_string(file, string, max_length):
@@ -29,7 +29,9 @@ def write_string(file, string, max_length):
 
 
 def get_num_meshes():
-    return len(bpy.data.collections["meshes"].all_objects)
+    l = len(bpy.data.collections["meshes"].all_objects)
+    l += len(bpy.data.collections["nocoll_meshes"].all_objects)
+    return l
 
 
 """
@@ -55,6 +57,9 @@ def write_header(file, identifier, spawnpoint, num_meshes, num_objects):
 
 """
 struct LevelFormatMeshHeader {
+    static const uint32_t FLAG_COLLISION = 0x1;
+
+    uint32_t flags = 0;
     uint32_t blob_size = 0;
     uint32_t num_indices = 0;
     uint32_t num_vertices = 0;
@@ -62,9 +67,7 @@ struct LevelFormatMeshHeader {
 """
 
 
-def write_level_meshes(file):
-    mesh_list = bpy.data.collections["meshes"].all_objects
-            
+def write_level_meshes(file, mesh_list, has_collision):        
     for me in mesh_list:
         bm = bmesh.new()
         bm.from_mesh(me.data)
@@ -113,7 +116,10 @@ def write_level_meshes(file):
         
         # write mesh header and blob
         blob_size = len(indices) * 4 + len(list_vertices) * (3 + 2 + 3) * 4
-        file.write(struct.pack("<III", blob_size, len(indices), len(list_vertices)))
+        flags = 0x0 
+        if has_collision:
+            flags |= 0x1
+        file.write(struct.pack("<IIII", flags, blob_size, len(indices), len(list_vertices)))
         
         for idx in indices:
             file.write(struct.pack("<I", idx))
@@ -236,6 +242,17 @@ def write_level_object(file, level_object):
     file.write(level_object["custom_data"])
     
 
+def get_spawnpoint():
+    objects_list = bpy.data.collections["misc"].all_objects
+    sp_obj = objects_list.get("spawnpoint")
+    
+    if sp_obj == None:
+        raise Exception("spawnpoint not defined in misc collection")
+    
+    v = sp_obj.matrix_world.translation
+    return (v.y, v.z, v.x)    
+    
+
 basedir = os.path.dirname(bpy.data.filepath)
 if not basedir:
     raise Exception("Blend file is not saved")
@@ -244,15 +261,18 @@ level_name = Path(bpy.data.filepath).stem
 level_file_path = os.path.join(basedir, level_name + ".level")
 identifier = level_name + "@bl@lv"
 
-spawnpoint = (0, 0, 0) # in opengl coords
+spawnpoint = get_spawnpoint() # in opengl coords
 
 level_objects = extract_level_objects()
 
 pprint(level_objects)
+print("spawnpoint at", spawnpoint)
 
 with open(level_file_path, 'wb') as file:
     write_header(file, identifier, spawnpoint, get_num_meshes(), len(level_objects))
-    write_level_meshes(file)
+    
+    write_level_meshes(file, bpy.data.collections["meshes"].all_objects, True)
+    write_level_meshes(file, bpy.data.collections["nocoll_meshes"].all_objects, False)
     
     for lo in level_objects:
         write_level_object(file, lo)

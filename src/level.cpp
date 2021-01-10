@@ -69,7 +69,10 @@ Level::Level(std::string levelfile, std::string texture, rp3d::PhysicsCommon *ph
         meshes.push_back(new Mesh(h.num_indices, b.indices, h.num_vertices, b.vertices, b.texcoords, b.normals));
     }
 
+    // add meshes to physics worlds
     for (int i = 0; i < format.header.num_meshes; i++) {
+        if (!(format.mesh_headers[i].flags & LevelFormatMeshHeader::FLAG_COLLISION)) continue;
+
         auto body = world->createRigidBody(rp3d::Transform::identity());
         body->setUserData(BodyIdentifier::LEVEL.as_ptr());
         body->setType(rp3d::BodyType::STATIC);

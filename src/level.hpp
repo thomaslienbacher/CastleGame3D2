@@ -14,7 +14,7 @@
 
 //TODO: put constants into namespace or struct
 const uint32_t LEVEL_MAGIC = 0x4c56454c;
-const uint32_t LEVEL_VERSION = 0x3;
+const uint32_t LEVEL_VERSION = 0x4;
 
 struct LevelFormatHeader {
     uint32_t magic = 0;
@@ -27,6 +27,9 @@ struct LevelFormatHeader {
 } __attribute__ ((packed));
 
 struct LevelFormatMeshHeader {
+    static const uint32_t FLAG_COLLISION = 0x1;
+
+    uint32_t flags = 0;
     uint32_t blob_size = 0;
     uint32_t num_indices = 0;
     uint32_t num_vertices = 0;
@@ -105,7 +108,7 @@ public:
 
     glm::vec3 get_spawnpoint();
 
-    std::vector<LevelFormatObject>& get_objects();
+    std::vector<LevelFormatObject> &get_objects();
 };
 
 

@@ -42,7 +42,9 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     fs = utils::file_to_string("data/font_fs.glsl");
     font_shader = new Shader(vs, fs);
 
-    level = new Level(R"(E:\Thomas\Blender\training\level_format\basic_level_doors.level)",
+    auto slevel = R"(E:\Thomas\Blender\training\level_format_regions\level_regions.level)";
+    auto olevel = R"(E:\Thomas\Blender\training\level_format\basic_level_doors.level)";
+    level = new Level(slevel,
                       R"(E:\Thomas\Blender\training\level_format\level_textured_test.png)",
                       &physx, world);
     player = new Player(level->get_spawnpoint(), &physx, world);
@@ -100,7 +102,7 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
 
     font_texture = new Texture("data/cmb_font.png");
     font = new Font("data/cmb_font.fontdef", font_texture);
-    text = new Text("Escape the maze", font);
+    text = new Text("Escape the castle!", font);
 
     source.play(sound);
     source.set_pitch(0.8f);
@@ -180,11 +182,14 @@ void Game::render() {
         debug = false;
     }
 
-    if (time <= 4.0f) {
+    if (time <= -10.0f) {
         glDisable(GL_DEPTH_TEST);
         auto window_size = window::size();
-        font_shader->set_uniform("u_proj", glm::ortho(0.f, window_size.x, 0.f, window_size.y, -1.f, 1.f));
-        const float scale = 1.1f;
+
+        auto ortho = glm::ortho(0.f, window_size.x, 0.f, window_size.y, -1.f, 1.f);
+        font_shader->set_uniform("u_proj", ortho);
+        float target_size = 0.05f; // relative to window height
+        float scale = target_size / (text->get_height() / window_size.y);
         auto translate = glm::translate(glm::mat4(1.0f),
                                         {-text->get_width() / 2.f * scale + window_size.x / 2.0f, 10.f, 0.f});
         font_shader->set_uniform("u_model", glm::scale(translate, glm::vec3(scale)));

@@ -59,7 +59,7 @@ class Text {
     GLuint vbos[2];
     Font *font;
     int num_vertices;
-    float width;
+    float width, height; //in pixels
 
 public:
     Text(std::string text, Font *font);
@@ -69,6 +69,8 @@ public:
     void render(Shader *font_shader);
 
     float get_width() const;
+
+    float get_height() const;
 };
 
 

@@ -13,7 +13,7 @@ class Texture {
 
 public:
 
-    Texture(std::filesystem::path &&path);
+    Texture(std::filesystem::path &&path, GLenum mag_filter = GL_NEAREST, GLenum min_filter = GL_NEAREST_MIPMAP_LINEAR);
 
     ~Texture();
 

@@ -8,7 +8,7 @@
 
 Door::Door(std::string model, std::string texture, glm::vec3 position, float yrot, glm::vec3 dimensions,
            rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world, Rune *trigger) :
-        position(position), yrot(yrot), opening(false), open_distance(0.f), max_open_distance(dimensions.y + 0.3f),
+        position(position), yrot(yrot), opening(false), open_distance(0.f), max_open_distance(dimensions.y + 1.f),
         physx(physx), world(world), trigger(trigger) {
 
     geometry = new GeometryFormat(model);
@@ -33,11 +33,12 @@ Door::~Door() {
     delete geometry;
 }
 
-void Door::update(float delta) {
+void Door::update(float delta, Player *player) {
     if (open_distance > max_open_distance) return;
-    if (trigger->is_collected()) {
+    float dist = glm::distance(position, player->get_position());
+    if ((trigger->is_collected() && dist <= 6.0f) || opening) {
         opening = true;
-        open_distance += delta * 0.8f;
+        open_distance += delta * 1.0f;
         body->setTransform(rp3d::Transform({position.x, position.y - open_distance, position.z},
                                            rp3d::Quaternion::fromEulerAngles(0.f, glm::radians(yrot), 0.f)));
     }

@@ -45,7 +45,7 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     auto slevel = R"(E:\Thomas\Blender\training\level_format_regions\level_regions.level)";
     auto olevel = R"(E:\Thomas\Blender\training\level_format\basic_level_doors.level)";
     level = new Level(slevel,
-                      R"(E:\Thomas\Blender\training\level_format\level_textured_test.png)",
+                      R"(E:\Thomas\Blender\training\level_format_regions\texture.png)",
                       &physx, world);
     player = new Player(level->get_spawnpoint(), &physx, world);
 
@@ -81,16 +81,16 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
 
             Door *d;
             if (dd.trigger == LevelFormatObject::CustomData::RuneObject::A) {
-                d = new Door(R"(E:\Thomas\Blender\training\level_format\basic_level_doors_door_a.model)",
-                             R"(E:\Thomas\Blender\training\level_format\door_a.png)",
+                d = new Door(R"(E:\Thomas\Blender\training\level_format_regions\level_regions_door_a.model)",
+                             R"(E:\Thomas\Blender\training\level_format_regions\door_a.png)",
                              {o.position[0], o.position[1], o.position[2]},
                              dd.yrot,
                              {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
                              &physx, world, rune);
             } else if (dd.trigger == LevelFormatObject::CustomData::RuneObject::B) {
 
-                d = new Door(R"(E:\Thomas\Blender\training\level_format\basic_level_doors_door_b.model)",
-                             R"(E:\Thomas\Blender\training\level_format\door_b.png)",
+                d = new Door(R"(E:\Thomas\Blender\training\level_format_regions\level_regions_door_b.model)",
+                             R"(E:\Thomas\Blender\training\level_format_regions\door_b.png)",
                              {o.position[0], o.position[1], o.position[2]},
                              dd.yrot,
                              {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
@@ -100,7 +100,7 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
         }
     }
 
-    font_texture = new Texture("data/cmb_font.png");
+    font_texture = new Texture("data/cmb_font.png", GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
     font = new Font("data/cmb_font.fontdef", font_texture);
     text = new Text("Escape the castle!", font);
 
@@ -139,7 +139,7 @@ void Game::update(float delta) {
         r->update(delta);
     }
     for (auto d : doors) {
-        d->update(delta);
+        d->update(delta, player);
     }
 
     static float time = 0;
@@ -182,7 +182,7 @@ void Game::render() {
         debug = false;
     }
 
-    if (time <= -10.0f) {
+    if (time <= 10.0f) {
         glDisable(GL_DEPTH_TEST);
         auto window_size = window::size();
 

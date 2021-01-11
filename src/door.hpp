@@ -12,6 +12,7 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
 #include "rune.hpp"
+#include "player.hpp"
 
 class Door {
     glm::vec3 position;
@@ -36,7 +37,7 @@ public:
 
     ~Door();
 
-    void update(float delta);
+    void update(float delta, Player *player);
 
     void render(Shader *simple_shader);
 };

@@ -195,7 +195,7 @@ GeometryFormat::GeometryFormat(std::string &binfile) {
     in.open(binfile, std::ifstream::in | std::ifstream::binary);
 
     if (!in.is_open()) {
-        std::cerr << "Couln't open " << binfile << panic;
+        std::cerr << "Couldn't open " << binfile << panic;
     }
 
     in.read((char *) &this->header, sizeof(GeometryFormatHeader));

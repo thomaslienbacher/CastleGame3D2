@@ -20,6 +20,7 @@ namespace window {
         }
     }
 
+#ifdef DEBUG_BUILD
     static void debug_msg_callback(GLenum source, GLenum type, GLuint id,
                                    GLenum severity, GLsizei length, const GLchar *message, const void *userParam) {
         if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;
@@ -101,6 +102,7 @@ namespace window {
         printf("OpenGL Debug: %s %s, id %x, severity %s, message %s\n", source_str, type_str, id,
                severity_str, message);
     }
+#endif
 
     void init() {
         //opengl and window init

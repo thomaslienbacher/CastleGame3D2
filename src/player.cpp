@@ -5,7 +5,6 @@
 #include "player.hpp"
 #include "window.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/epsilon.hpp>
 #include "collisionhandler.hpp"
 
 Player::Player(glm::vec3 spawnpoint, rp3d::PhysicsCommon *physx, rp3d::PhysicsWorld *world):

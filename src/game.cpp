@@ -15,8 +15,9 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     settings.defaultPositionSolverNbIterations = 15;
     settings.defaultVelocitySolverNbIterations = 15;
     world = physx.createPhysicsWorld(settings);
-    world->setIsDebugRenderingEnabled(true);
     world->enableSleeping(false);
+#ifdef DEBUG_BUILD
+    world->setIsDebugRenderingEnabled(true);
 
     auto logger = physx.createDefaultLogger();
     auto logLevel = (unsigned int) rp3d::Logger::Level::Warning | (unsigned int) rp3d::Logger::Level::Error;
@@ -29,7 +30,7 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     debug_renderer->setIsDebugItemDisplayed(rp3d::DebugRenderer::DebugItem::COLLIDER_AABB, true);
     debug_renderer->setIsDebugItemDisplayed(rp3d::DebugRenderer::DebugItem::COLLISION_SHAPE, true);
     debug_renderer->setIsDebugItemDisplayed(rp3d::DebugRenderer::DebugItem::COLLIDER_BROADPHASE_AABB, false);
-
+#endif
     auto vs = utils::file_to_string("data/common_vs.glsl");
     auto fs = utils::file_to_string("data/common_fs.glsl");
     simple_shader = new Shader(vs, fs);
@@ -42,10 +43,9 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     fs = utils::file_to_string("data/font_fs.glsl");
     font_shader = new Shader(vs, fs);
 
-    auto slevel = R"(E:\Thomas\Blender\training\level_format_regions\level_regions.level)";
-    auto olevel = R"(E:\Thomas\Blender\training\level_format\basic_level_doors.level)";
+    auto slevel = "data/level_regions.level";
     level = new Level(slevel,
-                      R"(E:\Thomas\Blender\training\level_format_regions\texture.png)",
+                      "data/level_texture.png",
                       &physx, world);
     player = new Player(level->get_spawnpoint(), &physx, world);
 
@@ -58,12 +58,12 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
 
             switch (o.custom_data.rune.kind) {
                 case LevelFormatObject::CustomData::RuneObject::Kind::A:
-                    mod = R"(E:\Thomas\CLion-Workspace\CastleGame3D2\Assets\runes\rune_a\rune_a.model)";
+                    mod = "data/rune_a.model";
                     tex = "data/rune_a.png";
                     break;
                 default:
                 case LevelFormatObject::CustomData::RuneObject::Kind::B:
-                    mod = R"(E:\Thomas\CLion-Workspace\CastleGame3D2\Assets\runes\rune_b\rune_b.model)";
+                    mod = "data/rune_b.model";
                     tex = "data/rune_b.png";
                     break;
             }
@@ -81,16 +81,16 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
 
             Door *d;
             if (dd.trigger == LevelFormatObject::CustomData::RuneObject::A) {
-                d = new Door(R"(E:\Thomas\Blender\training\level_format_regions\level_regions_door_a.model)",
-                             R"(E:\Thomas\Blender\training\level_format_regions\door_a.png)",
+                d = new Door("data/level_regions_door_a.model",
+                             "data/door_a.png",
                              {o.position[0], o.position[1], o.position[2]},
                              dd.yrot,
                              {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
                              &physx, world, rune);
             } else if (dd.trigger == LevelFormatObject::CustomData::RuneObject::B) {
 
-                d = new Door(R"(E:\Thomas\Blender\training\level_format_regions\level_regions_door_b.model)",
-                             R"(E:\Thomas\Blender\training\level_format_regions\door_b.png)",
+                d = new Door("data/level_regions_door_b.model",
+                             "data/door_b.png",
                              {o.position[0], o.position[1], o.position[2]},
                              dd.yrot,
                              {dd.dimensions[0], dd.dimensions[1], dd.dimensions[2]},
@@ -101,9 +101,10 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     }
 
     font_texture = new Texture("data/cmb_font.png", GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
-    font = new Font("data/cmb_font.fontdef", font_texture);
+    font = new Font("data/cmb_font.font", font_texture);
     text = new Text("Escape the castle!", font);
 
+    source.set_volume(0.f);
     source.play(sound);
     source.set_pitch(0.8f);
     source.set_looping(false);
@@ -130,10 +131,11 @@ Game::~Game() {
 
 void Game::update(float delta) {
     time += delta;
-    world->update(1.0f / 60.0f);
+    world->update(std::min(delta, 1.0f / 40.0f));
+#ifdef DEBUG_BUILD
     debug_renderer->reset();
     debug_renderer->computeDebugRenderingPrimitives(*world);
-
+#endif
     player->update(delta);
     for (auto r : runes) {
         r->update(delta);
@@ -142,6 +144,7 @@ void Game::update(float delta) {
         d->update(delta, player);
     }
 
+#ifdef DEBUG_BUILD
     static float time = 0;
     time += delta;
     const float radius = 3.0f;
@@ -154,11 +157,13 @@ void Game::update(float delta) {
     if (window::is_key_pressed(GLFW_KEY_O)) {
         window::resume_audio();
     }
+#endif
 }
 
 void Game::render() {
+#ifdef DEBUG_BUILD
     debug::set_cam(player->camera());
-
+#endif
     simple_shader->set_uniform("u_proj", player->camera().get_proj_mat());
     simple_shader->set_uniform("u_view", player->get_view_mat());
     level->render(simple_shader);
@@ -173,6 +178,7 @@ void Game::render() {
         r->render(overlaying_shader);
     }
 
+#ifdef DEBUG_BUILD
     static bool debug = false;
 
     if (window::is_key_pressed(GLFW_KEY_F1)) {
@@ -181,6 +187,7 @@ void Game::render() {
     if (window::is_key_pressed(GLFW_KEY_F2)) {
         debug = false;
     }
+#endif
 
     if (time <= 10.0f) {
         glDisable(GL_DEPTH_TEST);
@@ -197,6 +204,7 @@ void Game::render() {
         glEnable(GL_DEPTH_TEST);
     }
 
+#ifdef DEBUG_BUILD
     if (debug) {
         debug::render_physics(debug_renderer);
         debug::set_color(0.7f, 0.7f, 0.7f);
@@ -204,4 +212,5 @@ void Game::render() {
         debug::point({0.0, 0.0});
         glPointSize(2.0f);
     }
+#endif
 }

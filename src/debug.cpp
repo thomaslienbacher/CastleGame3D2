@@ -7,6 +7,8 @@
 #include <glm/gtx/common.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#ifdef DEBUG_BUILD
+
 namespace debug {
     static float color[3] = {1.0, 1.0, 1.0};
     static GLint current_program = 0;
@@ -234,5 +236,6 @@ namespace debug {
 
         restore();
     }
-
 }
+
+#endif

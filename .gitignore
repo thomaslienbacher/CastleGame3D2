@@ -11,8 +11,7 @@ log.txt
 *.exe
 *.cbp
 *.a
-cmake-build-release-testapp
-cmake-build-*
-!cmake-build-debug/data
+cmake-build-*/*
+!cmake-build-release/data
 .idea
 *.blend1

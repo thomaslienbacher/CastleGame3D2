@@ -12,6 +12,8 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include "geometry.hpp"
 
+#ifdef DEBUG_BUILD
+
 namespace debug {
 
     void set_color(float r, float g, float b);
@@ -40,5 +42,7 @@ namespace debug {
 
     rp3d::Vector3 vec_into(glm::vec3 v);
 }
+
+#endif
 
 #endif //CASTLEGAME3D2_DEBUG_HPP

@@ -6,6 +6,7 @@
 #include "window.hpp"
 #include <cstdio>
 #include <iostream>
+#include "utils.hpp"
 
 namespace window {
     GLFWwindow *glfw_window = nullptr;
@@ -21,6 +22,7 @@ namespace window {
     }
 
 #ifdef DEBUG_BUILD
+
     static void debug_msg_callback(GLenum source, GLenum type, GLuint id,
                                    GLenum severity, GLsizei length, const GLchar *message, const void *userParam) {
         if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;
@@ -54,14 +56,14 @@ namespace window {
             case GL_DEBUG_SOURCE_SHADER_COMPILER:
                 source_str = "SHADER_COMPILER";
                 break;
-            case GL_DEBUG_SOURCE_THIRD_PARTY    :
+            case GL_DEBUG_SOURCE_THIRD_PARTY:
                 source_str = "THIRD_PARTY";
                 break;
-            case GL_DEBUG_SOURCE_APPLICATION    :
+            case GL_DEBUG_SOURCE_APPLICATION:
                 source_str = "APPLICATION";
                 break;
             default:
-            case GL_DEBUG_SOURCE_OTHER    :
+            case GL_DEBUG_SOURCE_OTHER:
                 source_str = "OTHER";
                 break;
         }
@@ -102,23 +104,37 @@ namespace window {
         printf("OpenGL Debug: %s %s, id %x, severity %s, message %s\n", source_str, type_str, id,
                severity_str, message);
     }
+
 #endif
 
     void init() {
         //opengl and window init
-        glfwInit();
+        auto result = glfwInit();
+        if (result != GLFW_TRUE) {
+            const char *desc = nullptr;
+            int code = glfwGetError(&desc);
+            std::cerr << "glfwInit() failed: [" << code << "] " << desc << panic;
+        }
 
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_SAMPLES, 4);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
+#if DEBUG_BUILD
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+        auto videomode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfw_window = glfwCreateWindow(std::lround(videomode->width * 0.75), std::lround(videomode->height * 0.75),
+                                       "CastleGame3D2", nullptr, nullptr);
 
-        glfw_window = glfwCreateWindow(1280, 720, "CastleGame3D2", nullptr, nullptr);
+        if (!glfw_window) {
+            const char *desc = nullptr;
+            int code = glfwGetError(&desc);
+            std::cerr << "Window creation failed with OpenGL context: [" << code << "] " << desc << panic;
+        }
 
         glfwSetFramebufferSizeCallback(glfw_window, framebuffer_size_callback);
         glfwMakeContextCurrent(glfw_window);
@@ -129,9 +145,11 @@ namespace window {
         glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 #ifdef DEBUG_BUILD
-        glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback((GLDEBUGPROC) debug_msg_callback, nullptr);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        if (glad_glDebugMessageCallback && glad_glDebugMessageControl) {
+            glEnable(GL_DEBUG_OUTPUT);
+            glDebugMessageCallback((GLDEBUGPROC) debug_msg_callback, nullptr);
+            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        }
 #endif
 
         glEnable(GL_TEXTURE_2D);

@@ -6,7 +6,7 @@
 #define CASTLEGAME3D2_GLALHEADERS_HPP
 
 #include <glad/glad.h>
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 

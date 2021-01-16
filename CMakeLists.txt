@@ -5,7 +5,11 @@ set(CMAKE_CXX_STANDARD 20)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL Release)
     add_definitions("-DRELEASE_BUILD")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows -Wall -Wextra")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
+
+    if (WIN32)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-subsystem,windows -mwindows")
+    endif (WIN32)
 elseif (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     # set(CMAKE_VERBOSE_MAKEFILE on)
     add_definitions("-DDEBUG_BUILD")
@@ -22,11 +26,10 @@ add_subdirectory(reactphysics3d)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} reactphysics3d)
-target_link_libraries(${PROJECT_NAME} ${OPENAL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} reactphysics3d glfw glad ${OPENGL_LIBRARIES} ${OPENAL_LIBRARY})
+if (UNIX)
+    target_link_libraries(${PROJECT_NAME} m ${CMAKE_DL_LIBS})
+endif (UNIX)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glad/incslude/)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glm/)

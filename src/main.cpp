@@ -12,7 +12,7 @@
 #endif
 
 int main() {
-#ifdef _WIN32
+#if defined(_WIN32) && defined(RELEASE_BUILD)
     FreeConsole();
 #endif
     window::init();

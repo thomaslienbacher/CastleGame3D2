@@ -19,6 +19,9 @@
 #include "door.hpp"
 #include "sound.hpp"
 #include "text.hpp"
+#include "texttrigger.hpp"
+
+class TextTrigger;
 
 class Game {
     rp3d::DebugRenderer *debug_renderer;
@@ -30,11 +33,12 @@ class Game {
     Texture *overlay;
     std::vector<Rune *> runes;
     std::vector<Door *> doors;
+    std::vector<TextTrigger*> text_triggers;
+    TextTrigger* text_trigger_active_render;
     Sound sound;
     SoundSource source;
     Texture *font_texture;
     Font *font;
-    Text *text;
     float time;
 
 public:
@@ -48,6 +52,8 @@ public:
     void update(float delta);
 
     void render();
+
+    void set_active_text_trigger(TextTrigger* text_trigger);
 };
 
 #endif //CASTLEGAME3D2_GAME_HPP

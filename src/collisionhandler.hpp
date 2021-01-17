@@ -16,6 +16,7 @@ struct BodyIdentifier {
     static const BodyIdentifier PLAYER;
     static const BodyIdentifier RUNE;
     static const BodyIdentifier DOOR;
+    static const BodyIdentifier TEXTTRIGGER;
 
     size_t id;
 

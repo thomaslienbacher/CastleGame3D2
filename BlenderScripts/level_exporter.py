@@ -11,7 +11,7 @@ import array
 from pprint import pprint
 
 MAGIC = 0x4c56454c
-VERSION = 4
+VERSION = 5
 FLAGS = 0
 
 
@@ -145,7 +145,8 @@ struct LevelFormatObject {
     enum Type : uint32_t {
         None = 0,
         Rune = 1,
-        Door = 2
+        Door = 2,
+        TextTrigger = 3
     };
 
     uint32_t id = 0;
@@ -166,12 +167,19 @@ struct LevelFormatObject {
             Kind kind;
             float yrot;
         } rune;
-        
+
         struct DoorObject {
             float dimensions[3];
             float yrot;
             RuneObject::Kind trigger;
         } door;
+
+        struct TextTriggerObject {
+            static const std::string STRINGS[];
+
+            float dimensions[3];
+            uint32_t string_id;
+        } text_trigger;
     } custom_data;
 } __attribute__ ((packed));
 """
@@ -222,6 +230,17 @@ def extract_level_objects():
             
             buffer = array.array('B', [0 for i in range(24)])
             struct.pack_into("<ffffI", buffer, 0, dimensions.y, dimensions.z, 0.6, yrot, trigger)
+            new["custom_data"] = bytes(buffer)
+            
+        if type == 3:
+            dimensions = o.dimensions
+            string_id = o.data.get("string_id")
+            
+            if string_id == None:
+                raise Exception("incomplete definition " + o.name)
+            
+            buffer = array.array('B', [0 for i in range(24)])
+            struct.pack_into("<fffI", buffer, 0, dimensions.y, dimensions.z, dimensions.x, string_id)
             new["custom_data"] = bytes(buffer)
             
         if new.get("custom_data") == None:

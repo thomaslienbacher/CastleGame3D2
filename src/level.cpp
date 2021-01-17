@@ -4,8 +4,14 @@
 
 #include "level.hpp"
 #include "utils.hpp"
-#include "debug.hpp"
 #include "collisionhandler.hpp"
+
+const std::string LevelFormatObject::CustomData::TextTriggerObject::STRINGS[] = {
+        "W A S D to move, Mouse to look",
+        "Escape the castle!",
+        "Collect a rune to open this gate",
+        "Congratulations you have escaped!"
+};
 
 LevelFormat::LevelFormat(std::string levelfile) {
     std::ifstream in;

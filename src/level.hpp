@@ -14,7 +14,7 @@
 
 //TODO: put constants into namespace or struct
 const uint32_t LEVEL_MAGIC = 0x4c56454c;
-const uint32_t LEVEL_VERSION = 0x4;
+const uint32_t LEVEL_VERSION = 0x5;
 
 struct LevelFormatHeader {
     uint32_t magic = 0;
@@ -46,7 +46,8 @@ struct LevelFormatObject {
     enum Type : uint32_t {
         None = 0,
         Rune = 1,
-        Door = 2
+        Door = 2,
+        TextTrigger = 3
     };
 
     uint32_t id = 0;
@@ -73,6 +74,13 @@ struct LevelFormatObject {
             float yrot;
             RuneObject::Kind trigger;
         } door;
+
+        struct TextTriggerObject {
+            static const std::string STRINGS[];
+
+            float dimensions[3];
+            uint32_t string_id;
+        } text_trigger;
     } custom_data;
 } __attribute__ ((packed));
 

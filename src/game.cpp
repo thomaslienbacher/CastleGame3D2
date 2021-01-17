@@ -8,7 +8,7 @@
 #include "window.hpp"
 #include "utils.hpp"
 
-Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
+Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f), text_trigger_active_render(nullptr) {
     auto settings = rp3d::PhysicsWorld::WorldSettings();
     settings.gravity = rp3d::Vector3(0.f, -10.0f, 0.f);
     settings.worldName = "main_world";
@@ -50,6 +50,9 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
     player = new Player(level->get_spawnpoint(), &physx, world);
 
     overlay = new Texture("data/highlight.png");
+
+    font_texture = new Texture("data/cmb_font.png", GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
+    font = new Font("data/cmb_font.font", font_texture);
 
     for (auto &o : level->get_objects()) {
         if (o.type == LevelFormatObject::Type::Rune) {
@@ -98,11 +101,14 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
             }
             doors.emplace_back(d);
         }
-    }
 
-    font_texture = new Texture("data/cmb_font.png", GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
-    font = new Font("data/cmb_font.font", font_texture);
-    text = new Text("Escape the castle!", font);
+        if (o.type == LevelFormatObject::Type::TextTrigger) {
+            auto to = o.custom_data.text_trigger;
+            auto tt = new TextTrigger(to.STRINGS[to.string_id], font, {o.position[0], o.position[1], o.position[2]},
+                                      {to.dimensions[0], to.dimensions[1], to.dimensions[2]}, &physx, world);
+            text_triggers.emplace_back(tt);
+        }
+    }
 
     source.set_volume(0.f);
     source.play(sound);
@@ -111,9 +117,11 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f) {
 }
 
 Game::~Game() {
-    delete text;
     delete font_texture;
     delete font;
+    for (auto tt : text_triggers) {
+        delete tt;
+    }
     for (auto r : runes) {
         delete r;
     }
@@ -142,6 +150,9 @@ void Game::update(float delta) {
     }
     for (auto d : doors) {
         d->update(delta, player);
+    }
+    for (auto tt : text_triggers) {
+        tt->update(delta, this);
     }
 
 #ifdef DEBUG_BUILD
@@ -178,6 +189,10 @@ void Game::render() {
         r->render(overlaying_shader);
     }
 
+    if (text_trigger_active_render) {
+        text_trigger_active_render->render(font_shader);
+    }
+
 #ifdef DEBUG_BUILD
     static bool debug = false;
 
@@ -187,24 +202,7 @@ void Game::render() {
     if (window::is_key_pressed(GLFW_KEY_F2)) {
         debug = false;
     }
-#endif
 
-    if (time <= 10.0f) {
-        glDisable(GL_DEPTH_TEST);
-        auto window_size = window::size();
-
-        auto ortho = glm::ortho(0.f, window_size.x, 0.f, window_size.y, -1.f, 1.f);
-        font_shader->set_uniform("u_proj", ortho);
-        float target_size = 0.05f; // relative to window height
-        float scale = target_size / (text->get_height() / window_size.y);
-        auto translate = glm::translate(glm::mat4(1.0f),
-                                        {-text->get_width() / 2.f * scale + window_size.x / 2.0f, 10.f, 0.f});
-        font_shader->set_uniform("u_model", glm::scale(translate, glm::vec3(scale)));
-        text->render(font_shader);
-        glEnable(GL_DEPTH_TEST);
-    }
-
-#ifdef DEBUG_BUILD
     if (debug) {
         debug::render_physics(debug_renderer);
         debug::set_color(0.7f, 0.7f, 0.7f);
@@ -213,4 +211,8 @@ void Game::render() {
         glPointSize(2.0f);
     }
 #endif
+}
+
+void Game::set_active_text_trigger(TextTrigger *text_trigger) {
+    text_trigger_active_render = text_trigger;
 }

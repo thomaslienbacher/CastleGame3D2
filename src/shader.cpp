@@ -118,3 +118,20 @@ void Shader::use(GLuint program) {
         program_in_use = program;
     }
 }
+
+void Shader::set_uniform(std::string &&name, float val) {
+    use();
+
+    if (uniform_locations.contains(name)) {
+        glUniform1f(uniform_locations[name], val);
+    } else {
+        GLint loc = glGetUniformLocation(program, name.c_str());
+
+        if (loc == -1) {
+            std::cerr << "Uniform " << name << " no location" << panic;
+        }
+
+        uniform_locations[name] = loc;
+        glUniform1f(uniform_locations[name], val);
+    }
+}

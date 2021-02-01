@@ -33,8 +33,8 @@ class Game {
     Texture *overlay;
     std::vector<Rune *> runes;
     std::vector<Door *> doors;
-    std::vector<TextTrigger*> text_triggers;
-    TextTrigger* text_trigger_active_render;
+    std::vector<TextTrigger *> text_triggers;
+    TextTrigger *text_trigger_active_render;
     Sound sound;
     SoundSource source;
     Texture *font_texture;
@@ -53,7 +53,7 @@ public:
 
     void render();
 
-    void set_active_text_trigger(TextTrigger* text_trigger);
+    void set_active_text_trigger(TextTrigger *text_trigger);
 };
 
 #endif //CASTLEGAME3D2_GAME_HPP

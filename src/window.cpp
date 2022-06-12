@@ -127,8 +127,12 @@ namespace window {
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
         auto videomode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfw_window = glfwCreateWindow(std::lround(videomode->width * 0.75), std::lround(videomode->height * 0.75),
-                                       "CastleGame3D2", nullptr, nullptr);
+        //glfw_window = glfwCreateWindow(std::lround(videomode->width * 0.75), std::lround(videomode->height * 0.75),
+        //                               "CastleGame3D2", nullptr, nullptr);
+
+        //fullscreen:
+        glfw_window = glfwCreateWindow(videomode->width, videomode->height,
+                                       "CastleGame3D2", glfwGetPrimaryMonitor(), nullptr);
 
         if (!glfw_window) {
             const char *desc = nullptr;
@@ -142,7 +146,9 @@ namespace window {
         glfwSwapInterval(1);
 
         glfwFocusWindow(glfw_window);
+#ifdef RELEASE_BUILD
         glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+#endif
 
 #ifdef DEBUG_BUILD
         if (glad_glDebugMessageCallback && glad_glDebugMessageControl) {

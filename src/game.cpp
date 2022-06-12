@@ -8,7 +8,7 @@
 #include "window.hpp"
 #include "utils.hpp"
 
-Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f), text_trigger_active_render(nullptr) {
+Game::Game() : physx(), sound("data/mystic_theme.ogg"), time(0.f), text_trigger_active_render(nullptr) {
     auto settings = rp3d::PhysicsWorld::WorldSettings();
     settings.gravity = rp3d::Vector3(0.f, -10.0f, 0.f);
     settings.worldName = "main_world";
@@ -110,10 +110,10 @@ Game::Game() : physx(), sound("data/bounce.ogg"), time(0.f), text_trigger_active
         }
     }
 
-    source.set_volume(0.f);
+    source.set_volume(1.f);
     source.play(sound);
     source.set_pitch(0.8f);
-    source.set_looping(false);
+    source.set_looping(true);
 }
 
 Game::~Game() {
